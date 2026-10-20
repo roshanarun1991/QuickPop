@@ -27,5 +27,9 @@ try{
  await p.getByText('YOUR DAILY LITTLE WIN',{exact:true}).waitFor();
  assert.equal(errors.length,0);
  console.log('PASS Daily Pop completes when browser storage is blocked');
+ await p.locator('#privacy').click();p.once('dialog',dialog=>dialog.accept());
+ await p.locator('[data-action="clear-local"]').click();await p.locator('.pack').first().waitFor();
+ assert.equal(errors.length,0);
+ console.log('PASS privacy reset remains usable with blocked browser storage');
  await blocked.close();
 }finally{await browser.close();}

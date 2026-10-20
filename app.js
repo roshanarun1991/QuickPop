@@ -119,7 +119,7 @@ function connectRoom(){
  };
  socket.onerror=()=>connectionStatus(false);
 }
-function connectionStatus(connected){const el=$('#connection');if(el){el.textContent=connected?'LIVE & CONNECTED':'RECONNECTING…';el.classList.toggle('offline',!connected);}document.querySelectorAll('[data-answer]').forEach(b=>{if(!solo&&current?.phase==='question')b.disabled=!connected||!!current.self?.locked;});}
+function connectionStatus(connected){const el=$('#connection');if(el){el.textContent=connected?'LIVE & CONNECTED':'RECONNECTING…';el.classList.toggle('offline',!connected);}const now=Date.now()+offset;document.querySelectorAll('[data-answer]').forEach(b=>{if(!solo&&current?.phase==='question')b.disabled=!connected||!current.self||!!current.self.locked||now<current.startAt||now>=current.deadline;});}
 function send(type,extra={}){
  if(!socket||socket.readyState!==WebSocket.OPEN){toast('Reconnecting. Give us a moment before trying again.');return;}
  socket.send(JSON.stringify({type,...extra}));
@@ -246,7 +246,7 @@ document.addEventListener('click',async e=>{
  if(t.dataset.answer!==undefined){
   const n=+t.dataset.answer;
   if(solo){if(solo.revealed)return;if(solo.pack.questions[solo.index].type==='multi'){solo.selected=solo.selected.includes(n)?solo.selected.filter(x=>x!==n):[...solo.selected,n];t.classList.toggle('selected',solo.selected.includes(n));t.setAttribute('aria-pressed',solo.selected.includes(n));}else{solo.selected=[n];soloLock();}}
-  else if(current?.self&&!current.self.locked){if(current.question.type==='multi'){multi=multi.includes(n)?multi.filter(x=>x!==n):[...multi,n];t.classList.toggle('selected',multi.includes(n));t.setAttribute('aria-pressed',multi.includes(n));}else{document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=true);send('answer',{choices:[n],index:current.index});}}
+  else if(current?.self&&!current.self.locked){if(current.phase!=='question'||Date.now()+offset<current.startAt||Date.now()+offset>=current.deadline)return;if(current.question.type==='multi'){multi=multi.includes(n)?multi.filter(x=>x!==n):[...multi,n];t.classList.toggle('selected',multi.includes(n));t.setAttribute('aria-pressed',multi.includes(n));}else{document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=true);send('answer',{choices:[n],index:current.index});}}
   return;
  }
  for(const action of ['up','duplicate','delete'])if(t.dataset[action]!==undefined){
@@ -274,7 +274,7 @@ document.addEventListener('click',async e=>{
  case 'export-quiz':
   try{const quiz=validateQuiz(draft),url=URL.createObjectURL(new Blob([JSON.stringify(quiz,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='quickpop-my-quiz.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){error(e.message);}break;
  case 'clear-local':
-  if(confirm('Clear your local drafts, results, preferences and room sessions? Export drafts first if needed.')){for(const key of Object.keys(localStorage))if(key.startsWith('quickpop-'))localStorage.removeItem(key);$('#modal').close();closeConnection();location.hash='home';location.reload();}break;
+  if(confirm('Clear your local drafts, results, preferences and room sessions? Export drafts first if needed.')){memory.clear();try{for(const key of Object.keys(localStorage))if(key.startsWith('quickpop-'))localStorage.removeItem(key);}catch{}$('#modal').close();closeConnection();location.hash='home';location.reload();}break;
  }
 });
 function route(){
