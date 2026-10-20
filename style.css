@@ -14,3 +14,33 @@
 .distribution{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0}.distribution div{background:var(--raised);padding:12px;text-align:center;border:1px solid var(--line);font:12px var(--mono)}.distribution b{display:block;font:28px var(--head)}
 @media(max-width:700px){.site-header #sound{display:inline-flex;width:39px;padding:0;font-size:20px}.site-header #sound span{display:none}.site-header nav{gap:7px}}
 @media(max-width:370px){.site-header nav .btn{font-size:9px;padding:8px}.site-header nav .square,.site-header #sound{width:33px;font-size:18px}}
+
+/* A quieter opening: one clear message and two actions, without decorative quiz cards. */
+.hero.hero-simple{display:block;min-height:0;padding:24px 0 38px;text-align:center}
+.hero-simple>div{max-width:1000px;margin:auto}
+.hero-simple h1{font-size:clamp(48px,6.4vw,88px);margin:24px auto;max-width:none;line-height:1.16}
+.hero-simple p{max-width:540px;margin:0 auto;font-size:18px;line-height:1.6}
+.hero-simple .hero-actions,.hero-simple .hero-proof{justify-content:center}
+.hero-simple .hero-actions{margin:28px 0 24px;gap:18px}
+.hero-simple .highlight{display:inline-block;transform:rotate(-1deg);padding:5px 12px 8px}
+.hero-simple+.home-tools{margin-top:12px}
+.result-title .center-actions{gap:16px;margin:30px auto 0;align-items:stretch}
+.result-title .center-actions>.btn{min-height:56px;flex:0 1 auto}
+.result-title .result-note{margin:26px auto 0;max-width:440px;padding:0 8px;line-height:1.7;text-align:center}
+footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px}
+footer>.wordmark{justify-self:start}footer>#privacy{justify-self:end}
+.footer-credit{text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;line-height:1.5}
+.powered-line{display:flex;justify-content:center;min-height:18px;width:17ch}
+.powered-type{display:block;white-space:nowrap;overflow:hidden;width:15ch;border-right:1px solid currentColor;animation:rans-type 7s steps(15,end) infinite}
+@keyframes rans-type{0%,12%{width:0}40%,72%{width:15ch}94%,100%{width:0}}
+@media(max-width:700px){
+ .hero.hero-simple{padding:10px 0 28px}.hero-simple h1{font-size:clamp(35px,8.5vw,58px);margin:20px auto;letter-spacing:-.7px}
+ .hero-simple p{font-size:16px}.hero-simple .eyebrow{font-size:10px;letter-spacing:1px}
+ .hero-simple .hero-actions{gap:13px}.hero-simple .hero-proof{flex-wrap:wrap;gap:8px}
+ .result-title .center-actions{display:grid;grid-template-columns:1fr;width:100%;max-width:390px;gap:15px}
+ .result-title .result-note{margin-top:24px;font-size:12px}
+ footer{grid-template-columns:1fr 1fr;gap:22px 12px}.footer-credit{grid-column:1/-1;grid-row:2}
+ .footer-credit>span{display:block}
+}
+@media(prefers-reduced-motion:reduce){.powered-type{animation:none;width:15ch;border-right:0}}
+.powered-type{box-sizing:content-box}

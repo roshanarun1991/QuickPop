@@ -4,7 +4,7 @@ A party-ready quiz for colleagues, friends and family. No accounts; join with a 
 
 ## What works
 
-20 original quiz packs / 120 questions; live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; optional teams and accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
+20 original quiz packs / 200 questions; live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; optional teams and accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
 
 See [DESIGN_REVIEW.md](DESIGN_REVIEW.md) for the review and deliberately deferred features, and [QA.md](QA.md) for checks and deployment acceptance.
 
@@ -37,7 +37,7 @@ npm run deploy
 
 Approve the browser login yourself. `wrangler.toml` selects the owner's Cloudflare account. The first deployment creates the SQLite Durable Object namespaces and publishes static assets. No KV ID copying, database provisioning or administrator secret is needed for this app.
 
-Open the printed `https://quickpop.<account-subdomain>.workers.dev` address. Host a three-question room, join from a second device, answer, reconnect, finish and rematch. See QA.md before announcing it to colleagues.
+Open the printed `https://quickpop.<account-subdomain>.workers.dev` address. Host a six-question room, join from a second device, answer, reconnect, finish and rematch. See QA.md before announcing it to colleagues.
 
 ## Automatic checks and future deployment
 

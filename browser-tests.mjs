@@ -22,7 +22,7 @@ try{
  for(const [width,height] of [[1440,1000],[1024,768],[768,1024],[390,844],[320,740]]){
   const {context,page}=await newPage({width,height});
   await page.goto(base);await page.locator('.pack').first().waitFor();await page.evaluate(()=>document.fonts.ready);
-  check(`${width}px: all 20 packs`,await page.locator('.pack').count()===20);
+  check(`${width}px: all 20 packs`,await page.locator('.pack').count()===20);check(`${width}px simplified hero`,await page.locator('.hero-art,.ticker').count()===0);check(`${width}px footer credit visible`,await page.locator('.footer-credit').isVisible());
   await noOverflow(page,`${width}px homepage has no horizontal overflow`);
   await page.locator('#search').fill('sweden');check(`${width}px search filters`,await page.locator('.pack').count()===1);
   await page.locator('#search').fill('notherezz');check(`${width}px empty state`,await page.getByText('NO MATCH. YET.').isVisible());
@@ -40,7 +40,7 @@ try{
   await noOverflow(page,`${width}px join form fits`);
   await page.locator('#pin').fill('a1b2c3');await page.locator('#pin').dispatchEvent('input');check(`${width}px numeric PIN sanitation`,/^\d*$/.test(await page.locator('#pin').inputValue()));
   if(width===390)await accessibility(page,'Mobile join');
-  await page.goto(base+'#host/friends');await noOverflow(page,`${width}px host setup fits`);
+  await page.goto(base+'#host/friends');await page.locator('#count').waitFor();check(`${width}px offers six or ten questions`,JSON.stringify(await page.locator('#count option').evaluateAll(options=>options.map(o=>o.value)))===JSON.stringify(['6','10']));await noOverflow(page,`${width}px host setup fits`);
   await page.goto(base+'#builder');await noOverflow(page,`${width}px builder fits`);
   await context.close();
  }
@@ -53,7 +53,7 @@ try{
  check('Daily Pop completes five questions',await solo.page.getByText('YOUR DAILY LITTLE WIN',{exact:true}).isVisible());
  await solo.page.reload();check('Daily results survive refresh',await solo.page.getByText('YOUR DAILY LITTLE WIN',{exact:true}).isVisible());
  check('Daily first completed attempt is saved',await solo.page.evaluate(()=>JSON.parse(localStorage.getItem('quickpop-daily')).answers.length===5));
- await accessibility(solo.page,'Daily result mobile');
+ await accessibility(solo.page,'Daily result mobile');const spacing=await solo.page.evaluate(()=>{const a=document.querySelector('.result-title .center-actions').getBoundingClientRect(),b=document.querySelector('.result-note').getBoundingClientRect();return b.top-a.bottom;});check('Result note clears button shadows',spacing>=20);await solo.page.screenshot({path:'test-results/result-mobile.png',fullPage:true});
  const downloadPromise=solo.page.waitForEvent('download');
  await solo.page.locator('[data-action="download-card"]').click();
  const download=await downloadPromise;await download.saveAs('test-results/result-card.png');
@@ -70,7 +70,7 @@ try{
  // Real Worker + Durable Object integration, using independent browser sessions.
  const host=await newPage(),player=await newPage({width:390,height:844});
  await host.page.goto(base+'#host/friends');
- await host.page.locator('#count').selectOption('3');await host.page.locator('#seconds').selectOption('10');
+ await host.page.locator('#count').selectOption('6');await host.page.locator('#seconds').selectOption('10');
  await host.page.locator('#create-room').click();await host.page.locator('.giant-pin').waitFor({timeout:15000});
  const pin=(await host.page.locator('.giant-pin').innerText()).trim();check('Hosted room receives four-digit PIN',/^\d{4}$/.test(pin));
  check('Lobby renders a join QR',await host.page.locator('#qr').evaluate(c=>c.width>100));
@@ -78,7 +78,7 @@ try{
  await player.page.locator('#room-view').waitFor();await host.page.locator('.player-bubble').filter({hasText:'Browser Fox'}).waitFor();
  check('Player appears live on host screen');
  await host.page.locator('[data-action="next"]').click();
- for(let round=0;round<3;round++){
+ for(let round=0;round<6;round++){
   await player.page.locator('#room-view[data-phase="question"]').waitFor();
   const first=player.page.locator('[data-answer]').first();await first.waitFor();
   await player.page.waitForFunction(()=>!document.querySelector('[data-answer]')?.disabled);

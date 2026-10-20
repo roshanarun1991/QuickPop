@@ -1,3 +1,4 @@
+import {EXTRA} from './extra-questions.js';
 // Original wording. Stable, general-audience facts; descriptive topic names, no franchise artwork.
 const p = (id,title,category,icon,color,description,rows,source) => ({
   id,title,category,icon,color,description,source,difficulty:'Mixed',questions:rows.map((r,i)=>({
@@ -167,6 +168,11 @@ export const PACKS = [
  ['Which TWO are programming languages?',['Python','JavaScript','HDMI','USB'],[0,1],'HDMI and USB are interface standards.']
  ],'https://home.cern/science/computing/birth-web')
 ];
+for(const pack of PACKS){
+ const rows=EXTRA[pack.id];
+ if(!rows||rows.length!==4)throw Error('Every pack needs four additional questions.');
+ for(const [i,[text,answer,b,c,d,fact]] of rows.entries())pack.questions.push({id:pack.id+'-'+(i+6),text,options:[answer,b,c,d],correct:[0],fact,type:'single',image:null});
+}
 // Deterministically vary answer positions for solo play. Live rooms shuffle again.
 for(const pack of PACKS)for(const [i,q] of pack.questions.entries()){
  const shift=([...pack.id].reduce((n,c)=>n+c.charCodeAt(0),0)+i*3)%q.options.length;

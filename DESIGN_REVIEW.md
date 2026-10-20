@@ -23,7 +23,7 @@ Cream canvas `#F3EAD5`, paper `#FFFAF0`, black ink `#161713`, pink `#FF5F91`, ye
 
 ## Implemented launch
 
-- 20 packs, 120 questions, English first. Topic text is descriptive; no franchise logos or posters.
+- 20 packs, 200 questions, English first. Topic text is descriptive; no franchise logos or posters.
 - Single choice, true/false, multi-select and a flag image question.
 - Live PIN/QR lobby, optional host-as-player, avatar choice, duplicate-name checks, basic nickname filter, kick before start, locked rooms.
 - Server-timed scoring, streak bonuses, tie-breaks, per-round answer counts and leaderboard, podium, rematch and series wins.
@@ -40,7 +40,7 @@ Public community quizzes, public edit links, uploaded images, CSV import, AI gen
 
 ## Content care
 
-The source bank records a reference URL per pack. Questions use original wording and stable facts. Festival questions acknowledge variation across communities. This has not been reviewed by a cultural advisory group; invite colleagues to flag wording or factual issues before expanding those packs. The 120-question bank provides changing daily combinations, not newly authored questions every day.
+The source bank records a reference URL per pack. Questions use original wording and stable facts. Festival questions acknowledge variation across communities. This has not been reviewed by a cultural advisory group; invite colleagues to flag wording or factual issues before expanding those packs. The 200-question bank provides changing daily combinations, not newly authored questions every day.
 
 ## Hosting and limits
 

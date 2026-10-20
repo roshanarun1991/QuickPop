@@ -15,7 +15,7 @@ Local results do not satisfy gates 5–6. Do not label a repository upload as a 
 
 | Area | Acceptance |
 | --- | --- |
-| Packs | 20 valid packs, 120 unique questions; 2–4 distinct options, valid correct indices, explanations and source references. |
+| Packs | 20 valid packs, 200 unique questions; 2–4 distinct options, valid correct indices, explanations and source references. |
 | Daily | Five distinct questions; deterministic by UTC date; a new date changes the selection. |
 | Inputs | Reject missing/oversized quizzes, duplicate answers, unsafe/long names and invalid choices. |
 | PIN | Four characters including leading zero; host token unrelated to PIN. |
@@ -69,13 +69,17 @@ Tests produce `test-results/browser-report.json`, screenshots and terminal test 
 
 ### Local release run — 20 October 2026
 
-- 18 engine/content tests passed.
-- 92 browser checks passed across five viewport widths, with no unhandled JavaScript exceptions.
+- 19 engine/content tests passed.
+- 117 browser checks passed across five viewport widths, with no unhandled JavaScript exceptions.
 - Six axe scans passed with zero violations on the checked screens.
 - 12 server integration checks passed, including 200 simultaneous authenticated player connections.
 - Offline cached homepage/practice and Daily Pop with blocked browser storage passed.
-- A complete three-question game, refresh recovery, timed reveals, podium, rematch and host closure passed using independent browser sessions.
+- A complete six-question game, refresh recovery, timed reveals, podium, rematch and host closure passed using independent browser sessions.
 - PNG result download passed; phone reveal and result image inspected visually.
 - Dependency audit reported zero known vulnerabilities at installation.
 
 **Pending:** Cloudflare authorization/deployment, public HTTPS game verification, real phone-camera QR scan and workplace-network testing. Automated accessibility checks are not a full assistive-technology audit. The load test verifies room capacity and connected lobby delivery, not sustained production throughput.
+
+### Layout update
+
+Removed the decorative hero card and slogan strip. Added a centred introduction, spaced result note and persistent Powered by RANS credit. The credit types and erases with reduced-motion support. All 20 packs now have 10 questions and offer 6 or 10 per hosted game. Tests cover both lengths without repeats and the animated footer across routes.
