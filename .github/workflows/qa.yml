@@ -35,6 +35,7 @@ jobs:
       - run: node integration-tests.mjs
       - run: npm run test:browser
       - run: node resilience-tests.mjs
+      - run: node static-tests.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -44,6 +45,28 @@ jobs:
         with:
           name: quickpop-site
           path: dist/
+  pages:
+    needs: qa
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: quickpop-site
+          path: dist
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - uses: actions/deploy-pages@v4
+        id: publish
   deploy:
     needs: qa
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY == 'true'
