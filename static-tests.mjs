@@ -14,6 +14,8 @@ try{
   assert.equal(await page.locator('.pack').count(),20);assert(await page.getByRole('link',{name:'JOIN A QUIZ'}).isVisible());assert(await page.locator('#quick-join').isVisible());assert(await page.locator('.live-note').isVisible());pass(`${width}px published home keeps joining visible`);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));pass(`${width}px homepage fits`);
   await page.screenshot({path:`test-results/published-home-${width}.png`,fullPage:true});
+  await page.goto(base+'#host/friends');await page.locator('#count').waitFor();assert.equal(await page.locator('#teams').count(),0);
+  await page.goto(base+'#join');await page.locator('#pin').waitFor();assert.equal(await page.locator('#team').count(),0);pass(`${width}px team selection is hidden in joining and hosting`);
   for(const count of [6,10]){
    await page.goto(base+'#host/friends');await page.locator('#count').selectOption(String(count));await page.locator('#create-room').click();assert((await page.locator('#form-error').innerText()).includes('not connected yet'));assert(await page.locator('#create-room').isEnabled());await page.locator('[data-practice]').click();
    for(let i=0;i<count;i++){await page.locator('[data-answer]').first().click();if(await page.locator('[data-action="solo-lock"]').count())await page.locator('[data-action="solo-lock"]').click();await page.locator('[data-action="solo-next"]').click();}

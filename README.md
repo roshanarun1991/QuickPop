@@ -4,13 +4,13 @@ A party-ready quiz for colleagues, friends and family. No accounts; join with a 
 
 ## What works
 
-20 original quiz packs / 200 questions; live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; optional teams and accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
+20 original quiz packs / 200 questions; live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
 
 See [DESIGN_REVIEW.md](DESIGN_REVIEW.md) for the review and deliberately deferred features, and [QA.md](QA.md) for checks and deployment acceptance.
 
 ## Public GitHub Pages edition
 
-The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Join a Quiz, PIN/nickname/avatar entry and full hosting setup are visible. A clear notice explains that creating or joining a live room requires the multiplayer service; attempted submissions display this notice without making unavailable API requests. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
+The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Join a Quiz, PIN/nickname/avatar entry and hosting setup are visible. New games use individual scores; team selection is hidden for now. A clear notice explains that creating or joining a live room requires the multiplayer service; attempted submissions display this notice without making unavailable API requests. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
 
 ## Runs without your computer
 
