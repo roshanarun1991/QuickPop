@@ -6,8 +6,8 @@ await mkdir('test-results',{recursive:true});
 const browser=await chromium.launch({headless:true});
 let checks=0;const pass=name=>{checks++;console.log('PASS',name);};
 try{
- for(const width of [1440,390,320]){
-  const ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce',serviceWorkers:'block'});
+ for(const [width,height] of [[1440,900],[1366,640],[390,667],[320,568],[844,390]]){
+  const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'reduce',serviceWorkers:'block'});
   await ctx.addInitScript(()=>{window.QUICKPOP_STATIC=true;});
   const page=await ctx.newPage(),errors=[],apiRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.url().includes('/api/'))apiRequests.push(r.url());});
   const response=await page.goto(base);assert(response.ok());await page.locator('.pack').first().waitFor();await page.evaluate(()=>document.fonts.ready);
@@ -18,7 +18,14 @@ try{
   await page.goto(base+'#join');await page.locator('#pin').waitFor();assert.equal(await page.locator('#team').count(),0);pass(`${width}px team selection is hidden in joining and hosting`);
   for(const count of [6,10]){
    await page.goto(base+'#host/friends');await page.locator('#count').selectOption(String(count));await page.locator('#create-room').click();assert((await page.locator('#form-error').innerText()).includes('not connected yet'));assert(await page.locator('#create-room').isEnabled());await page.locator('[data-practice]').click();
-   for(let i=0;i<count;i++){await page.locator('[data-answer]').first().click();if(await page.locator('[data-action="solo-lock"]').count())await page.locator('[data-action="solo-lock"]').click();await page.locator('[data-action="solo-next"]').click();}
+   for(let i=0;i<count;i++){
+    await page.locator('[data-answer]').first().click();
+    const inView=selector=>page.locator(selector).evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth&&el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));});
+    if(await page.locator('[data-action="solo-lock"]').count()){assert(await inView('[data-action="solo-lock"]'),'Lock in must be visible without scrolling');await page.locator('[data-action="solo-lock"]').click();}
+    assert(await inView('[data-action="solo-next"]'),`${width}x${height} Next question must be visible without scrolling`);
+    if(i===0&&count===6)await page.screenshot({path:`test-results/solo-next-${width}.png`});
+    await page.locator('[data-action="solo-next"]').click();
+   }
    await page.getByText('PRACTICE MAKES BRAGGING RIGHTS',{exact:true}).waitFor();
    assert((await page.locator('.result-title .display').innerText()).includes('/ '+count));pass(`${width}px ${count}-question solo game finishes`);
    const gap=await page.evaluate(()=>document.querySelector('.result-note').getBoundingClientRect().top-document.querySelector('.center-actions').getBoundingClientRect().bottom);assert(gap>=20);

@@ -91,3 +91,5 @@ The Pages job publishes the tested, bundled dist artifact. The static-site suite
 Join a Quiz and hosting setup remain visible before server connection. The static suite checks home PIN navigation, nickname and avatar controls, host setup, informative submission errors, re-enabled buttons and zero unavailable API requests at desktop and phone sizes. Solo practice respects the selected question count.
 
 Team selection is hidden in both joining and hosting. New rooms use individual scoring; tests assert that neither team control is rendered.
+
+Solo and Daily Pop answer controls sit in a fixed bottom bar with safe-area padding. Every answer in the static suite verifies that Next question (including See my result) is visible and unobscured without scrolling at 1440×900, 1366×640, 390×667, 320×568 and 844×390. Multi-answer Lock in uses the same bar. The question page reserves space so explanations remain scrollable above it.
