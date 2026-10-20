@@ -62,7 +62,7 @@ try{
  await solo.page.locator('[data-action="host-custom"]').click();check('Builder refuses incomplete questions',await solo.page.locator('#form-error').isVisible());
  const custom={title:'Office <script>test</script>',questions:Array.from({length:3},(_,i)=>({text:`Which answer is correct in round ${i+1}?`,options:['Correct','Wrong'],correct:[0],fact:'A private, original test question.'}))};
  await solo.page.locator('#import-quiz').setInputFiles({name:'quiz.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(custom))});
- await solo.page.locator('#quiz-title').waitFor();check('JSON import preserves safe literal text',await solo.page.locator('#quiz-title').inputValue()===custom.title);
+ await solo.page.waitForFunction(title=>document.querySelector('#quiz-title')?.value===title,custom.title);check('JSON import preserves safe literal text',await solo.page.locator('#quiz-title').inputValue()===custom.title);
  await solo.page.locator('[data-up="1"]').click();await solo.page.locator('[data-duplicate="1"]').click();check('Builder can reorder and duplicate',await solo.page.locator('.builder-question').count()===4);
  await solo.page.locator('[data-action="practice-custom"]').click();await solo.page.locator('[data-answer]').first().waitFor();check('Custom quiz solo preview works',await solo.page.locator('[data-answer]').count()===2);
  await solo.context.close();
