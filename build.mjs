@@ -1,0 +1,16 @@
+import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
+import {build} from 'esbuild';
+await mkdir('dist',{recursive:true});
+for(const f of ['index.html','style.css','theme.js','icon.svg','manifest.webmanifest'])await copyFile(f,`dist/${f}`);
+await copyFile('node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2','dist/anton.woff2');
+await copyFile('node_modules/@fontsource/courier-prime/files/courier-prime-latin-400-normal.woff2','dist/courier.woff2');
+for(const name of ['anton','courier-prime'])await copyFile(`node_modules/@fontsource/${name}/LICENSE`,`dist/${name}-LICENSE.txt`);
+await build({entryPoints:['app.js'],outfile:'dist/app.js',bundle:true,minify:true,format:'esm',target:'es2022'});
+const revision=process.env.GITHUB_SHA?.slice(0,12)||String(Date.now());
+const assets=['./','./index.html','./style.css','./theme.js','./app.js','./icon.svg','./manifest.webmanifest','./anton.woff2','./courier.woff2'];
+await writeFile('dist/sw.js',`const CACHE='quickpop-${revision}';const ASSETS=${JSON.stringify(assets)};
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('quickpop-')&&k!==CACHE).map(k=>caches.delete(k)))));});
+self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin||u.pathname.includes('/api/'))return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));}return r;}).catch(()=>caches.match(e.request).then(r=>r||((e.request.mode==='navigate')?caches.match('./index.html'):new Response('Offline',{status:503})))));});
+`);
+console.log('Built QuickPop: self-hosted fonts, no external runtime scripts, offline solo shell.');
