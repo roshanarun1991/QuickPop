@@ -10,7 +10,7 @@ See [DESIGN_REVIEW.md](DESIGN_REVIEW.md) for the review and deliberately deferre
 
 ## Public GitHub Pages edition
 
-The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Live PIN rooms are explicitly unavailable there until the multiplayer service is connected. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
+The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Join a Quiz, PIN/nickname/avatar entry and full hosting setup are visible. A clear notice explains that creating or joining a live room requires the multiplayer service; attempted submissions display this notice without making unavailable API requests. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
 
 ## Runs without your computer
 

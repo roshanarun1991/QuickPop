@@ -4,7 +4,8 @@ import QRCode from 'qrcode';
 const $=s=>document.querySelector(s),main=$('#main'),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shapes=['▲','●','■','◆'],colors=['blue','yellow','green','pink'];
 const staticHost=location.hostname.endsWith('.github.io')||globalThis.QUICKPOP_STATIC===true;
-if(staticHost){const join=document.querySelector('.site-header nav a');join.href='#topics';join.textContent='PLAY SOLO ↗';}
+const liveUnavailable='Live multiplayer is not connected yet. You can explore the setup now; joining and starting rooms will work once the game server is connected. Solo play and Daily Pop are ready.';
+const liveNotice=()=>staticHost?`<p class="notice live-note">${liveUnavailable}</p>`:'';
 const memory=new Map();
 const read=(key,fallback)=>{if(memory.has(key))return memory.get(key);try{return JSON.parse(localStorage.getItem(`quickpop-${key}`))??fallback;}catch{return fallback;}};
 const write=(key,value)=>{memory.set(key,value);try{localStorage.setItem(`quickpop-${key}`,JSON.stringify(value));return true;}catch{toast('Playing without browser storage. Keep this tab open; export drafts to keep them.');return false;}};
@@ -12,12 +13,13 @@ let selectedCategory='All',search='',avatar=0,socket=null,current=null,session=n
 let draft=read('draft',{title:'Our office knows best',questions:[blankQuestion(),blankQuestion(),blankQuestion()]});
 function blankQuestion(){return {text:'',options:['','','',''],correct:[0],fact:''};}
 function toast(message){const el=$('#toast');el.textContent=message;el.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.hidden=true,5000);}
-function error(message){const el=$('#form-error');if(el){el.textContent=message;el.hidden=false;el.tabIndex=-1;el.focus();}else toast(message);}
+function error(message){if(message===liveUnavailable&&$('.live-note'))$('.live-note').hidden=true;const el=$('#form-error');if(el){el.textContent=message;el.hidden=false;el.tabIndex=-1;el.focus();}else toast(message);}
 function setPage(html){main.innerHTML=html;main.focus({preventScroll:true});window.scrollTo(0,0);}
 function fieldError(){return '<p id="form-error" class="notice error" role="alert" hidden></p>';}
 function modal(title,html){$('#modal-content').innerHTML=`<h2 id="modal-title">${esc(title)}</h2>${html}`;$('#modal').showModal();}
 function closeConnection(){clearTimeout(retryTimer);if(socket){socket.onopen=socket.onmessage=socket.onerror=socket.onclose=null;socket.close();socket=null;}current=null;session=null;lastVersion=-1;}
 async function api(path,data){
+  if(staticHost)throw Error(liveUnavailable);
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
   try{
     const response=await fetch(`./api/${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:controller.signal});
@@ -52,11 +54,7 @@ function home(){
  <div class="filters" aria-label="Quiz categories">${['All',...CATEGORIES].map(c=>`<button class="chip" data-category="${esc(c)}" aria-pressed="${selectedCategory===c}">${esc(c)}</button>`).join('')}</div><div id="packs" class="pack-grid"></div><p class="hint" id="pack-count" aria-live="polite"></p></section>
  <section class="create-banner"><div><div class="eyebrow">MAKE IT PERSONAL</div><h2>INSIDE JOKES. OUTSIDE KNOWLEDGE.</h2><p>The office coffee order. That legendary team trip. Make a private quiz for the people who were there.</p></div><a class="btn paper" href="#builder">CREATE YOUR OWN +</a></section>
  <section class="how-grid" aria-label="How to play"><article><span class="step-no">01</span><div><h3>PICK A TOPIC</h3><p>Pop culture, places, food and a few friendly rivalries.</p></div></article><article><span class="step-no">02</span><div><h3>SHARE THE PIN</h3><p>Your colleagues join on their phones. No downloads.</p></div></article><article><span class="step-no">03</span><div><h3>LET IT GET COMPETITIVE</h3><p>Answer, reveal, celebrate. A rematch is always an option.</p></div></article></section></div>`);
- if(staticHost){
-  const link=document.querySelector('.hero-actions a[href="#join"]');link.href='#builder';link.textContent='MAKE A QUIZ +';
-  document.querySelector('.join-card').innerHTML='<div><div class="eyebrow">PICK A PACK. TAKE YOUR TIME.</div><h3>YOUR SOLO QUIZ BREAK</h3><p>6 or 10 questions. No timer. Live rooms coming soon.</p></div>';
-  document.querySelector('.how-grid').innerHTML='<article><span class="step-no">01</span><div><h3>PICK A TOPIC</h3><p>Find a favourite from 20 quiz packs.</p></div></article><article><span class="step-no">02</span><div><h3>CHOOSE YOUR ROUND</h3><p>Play 6 or 10 questions at your own pace.</p></div></article><article><span class="step-no">03</span><div><h3>SHARE YOUR RESULT</h3><p>Save your score card and compare with colleagues.</p></div></article>';
- }
+ if(staticHost)document.querySelector('.home-tools').insertAdjacentHTML('afterend',liveNotice());
  renderPacks();
  if($('#quick-join')){$('#quick-join').onsubmit=e=>{e.preventDefault();location.hash=`join/${$('#quick-pin').value}`;};$('#quick-pin').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);}
  $('#search').oninput=e=>{search=e.target.value;renderPacks();};
@@ -71,14 +69,8 @@ function getPack(id){return id==='custom'?validateQuiz(draft):PACKS.find(p=>p.id
 function hostSetup(id){
  let pack;try{pack=getPack(id);}catch(e){location.hash='builder';toast(e.message);return;}
  if(!pack){location.hash='home';return;}
- if(staticHost){
-  const counts=id==='custom'?[6,10,pack.questions.length].filter((n,i,a)=>n<=pack.questions.length&&a.indexOf(n)===i):[6,10];
-  setPage(`<div class="page narrow"><a class="back" href="#home">← ALL TOPICS</a><div class="panel"><div class="eyebrow">YOUR SOLO QUIZ BREAK</div><h1>${esc(pack.title)}</h1><p>${esc(pack.description||'Made by you. Ready to play.')}</p><div class="field"><label for="solo-count">Questions</label><select id="solo-count">${counts.map(n=>`<option value="${n}">${n} questions</option>`).join('')}</select></div><p>Take your time. See each answer and a short explanation as you play.</p><a class="btn" id="start-solo" href="#practice/${esc(id)}/${counts[0]}">LET’S PLAY ↗</a><p class="hint live-note">Live PIN rooms are coming soon. Solo games, Daily Pop and your private quiz builder work now.</p></div></div>`);
-  $('#solo-count').onchange=e=>$('#start-solo').href=`#practice/${id}/${e.target.value}`;
-  return;
- }
  setPage(`<div class="page narrow"><a class="back" href="#home">← ALL TOPICS</a><div class="panel"><div class="setup-head"><div class="setup-icon ${pack.color||'pink'}">${pack.icon||'✎'}</div><div><div class="eyebrow">${esc(pack.category||'YOUR OWN CREATION')}</div><h1>${esc(pack.title)}</h1><p>${pack.questions.length} original questions · play at your pace</p></div></div><p>${esc(pack.description||'Made for your people. Ready for the big screen.')}</p>
- <form id="host-form">${fieldError()}<div class="two-col"><div class="field"><label for="count">Questions</label><select id="count">${(id==='custom'?[6,10,pack.questions.length].filter((n,i,a)=>n<=pack.questions.length&&a.indexOf(n)===i):[6,10]).map(n=>`<option value="${n}" ${n===Math.min(6,pack.questions.length)?'selected':''}>${n} questions</option>`).join('')}</select></div><div class="field"><label for="seconds">Time per question</label><select id="seconds"><option value="10">10 seconds · Quick</option><option value="15" selected>15 seconds · Classic</option><option value="20">20 seconds · Relaxed</option><option value="30">30 seconds · Extra time</option></select></div></div>
+ ${liveNotice()}<form id="host-form">${fieldError()}<div class="two-col"><div class="field"><label for="count">Questions</label><select id="count">${(id==='custom'?[6,10,pack.questions.length].filter((n,i,a)=>n<=pack.questions.length&&a.indexOf(n)===i):[6,10]).map(n=>`<option value="${n}" ${n===Math.min(6,pack.questions.length)?'selected':''}>${n} questions</option>`).join('')}</select></div><div class="field"><label for="seconds">Time per question</label><select id="seconds"><option value="10">10 seconds · Quick</option><option value="15" selected>15 seconds · Classic</option><option value="20">20 seconds · Relaxed</option><option value="30">30 seconds · Extra time</option></select></div></div>
  <details class="details"><summary>MAKE IT YOUR KIND OF GAME</summary><label class="checkline"><input id="accuracy" type="checkbox">Accuracy scoring — no speed bonus</label><label class="checkline"><input id="auto" type="checkbox">Automatically continue after each reveal</label><label class="checkline"><input id="teams" type="checkbox">Show team scores too</label><label class="checkline"><input id="host-plays" type="checkbox">I’m playing on this screen too</label><div class="field"><label for="host-name">My nickname (if playing)</label><input id="host-name" value="Quiz Captain" maxlength="16"></div></details>
  <p class="hint">Up to 200 players. The room locks when you start. Correct answers are revealed together.</p><div class="actions"><button class="btn" id="create-room" type="submit">START A ROOM ↗</button><button class="btn paper" type="button" data-practice="${esc(id)}">TRY SOLO FIRST</button></div></form></div></div>`);
  $('#host-form').onsubmit=async e=>{
@@ -89,12 +81,13 @@ function hostSetup(id){
 }
 const randomName=()=>`${['Disco','Fika','Quiz','Lucky','Turbo','Cosmic'][Math.floor(Math.random()*6)]} ${['Fox','Panda','Pickle','Tiger','Otter','Kiwi'][Math.floor(Math.random()*6)]}`;
 function joinScreen(pin=''){
- if(staticHost){setPage('<div class="page narrow"><div class="panel"><h1>SOLO NOW.<br>TOGETHER SOON.</h1><p>Live PIN rooms are not available on this site yet. Pick a topic, play Daily Pop or create a private quiz.</p><a class="btn" href="#topics">PICK A QUIZ ↗</a></div></div>');return;}
- setPage(`<div class="page narrow"><a class="back" href="#home">← BACK TO THE GOOD STUFF</a><div class="panel"><div class="eyebrow">A LITTLE PIN. A LOT OF POTENTIAL.</div><h1 style="font-size:58px;margin:12px 0">YOU’RE IN THE<br>RIGHT PLACE.</h1><form id="join-form">${fieldError()}<div class="field"><label for="pin">Four-digit game PIN</label><input class="pin-input" id="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000" value="${esc(pin.replace(/\D/g,'').slice(0,4))}" required></div><div class="field"><label for="nickname">Your nickname</label><div style="display:flex;gap:12px"><input id="nickname" maxlength="16" value="${esc(read('nickname',randomName()))}" required autocomplete="off"><button class="btn square paper" type="button" data-action="random-name" aria-label="Suggest a nickname">⚄</button></div></div><div class="field"><label>Pick your game face</label><div class="avatar-grid">${AVATARS.map((a,i)=>`<button type="button" class="avatar-btn" data-avatar="${i}" aria-label="Avatar ${i+1}: ${a}" aria-pressed="${avatar===i}">${a}</button>`).join('')}</div></div><div class="field"><label for="team">Team colour (if teams are on)</label><select id="team"><option value="0">Team Blue</option><option value="1">Team Yellow</option><option value="2">Team Green</option><option value="3">Team Pink</option></select></div><button class="btn cyan" type="submit" id="join-button" style="width:100%">LET ME IN ↗</button><p class="hint">Use a nickname, not your full name. No account needed.</p></form></div></div>`);
+
+ setPage(`<div class="page narrow"><a class="back" href="#home">← BACK TO THE GOOD STUFF</a><div class="panel"><div class="eyebrow">A LITTLE PIN. A LOT OF POTENTIAL.</div><h1 style="font-size:58px;margin:12px 0">YOU’RE IN THE<br>RIGHT PLACE.</h1>${liveNotice()}<form id="join-form">${fieldError()}<div class="field"><label for="pin">Four-digit game PIN</label><input class="pin-input" id="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000" value="${esc(pin.replace(/\D/g,'').slice(0,4))}" required></div><div class="field"><label for="nickname">Your nickname</label><div style="display:flex;gap:12px"><input id="nickname" maxlength="16" value="${esc(read('nickname',randomName()))}" required autocomplete="off"><button class="btn square paper" type="button" data-action="random-name" aria-label="Suggest a nickname">⚄</button></div></div><div class="field"><label>Pick your game face</label><div class="avatar-grid">${AVATARS.map((a,i)=>`<button type="button" class="avatar-btn" data-avatar="${i}" aria-label="Avatar ${i+1}: ${a}" aria-pressed="${avatar===i}">${a}</button>`).join('')}</div></div><div class="field"><label for="team">Team colour (if teams are on)</label><select id="team"><option value="0">Team Blue</option><option value="1">Team Yellow</option><option value="2">Team Green</option><option value="3">Team Pink</option></select></div><button class="btn cyan" type="submit" id="join-button" style="width:100%">LET ME IN ↗</button><p class="hint">Use a nickname, not your full name. No account needed.</p></form></div></div>`);
  $('#pin').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
  $('#join-form').onsubmit=async e=>{
   e.preventDefault();if(busy)return;busy=true;const b=$('#join-button');b.disabled=true;
   try{const name=cleanName($('#nickname').value),pin=$('#pin').value;if(!/^\d{4}$/.test(pin))throw Error('Enter the four digits from the host’s screen.');
+   if(staticHost)throw Error(liveUnavailable);
    const existing=read('sessions',{})[pin];
    if(existing&&confirm('You have a saved session for this PIN. Reconnect to it?')){location.hash=`room/${pin}`;return;}
    const result=await api(`rooms/${pin}/join`,{name,avatar,team:Number($('#team').value)});write('nickname',name);saveSession(result);location.hash=`room/${pin}`;
@@ -252,7 +245,7 @@ document.addEventListener('click',async e=>{
  const t=e.target.closest('button,a');if(!t)return;
  if(t.dataset.pack){location.hash=`host/${t.dataset.pack}`;return;}
  if(t.dataset.category){selectedCategory=t.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.category===selectedCategory));renderPacks();return;}
- if(t.dataset.practice){location.hash=`practice/${t.dataset.practice}`;return;}
+ if(t.dataset.practice){location.hash=`practice/${t.dataset.practice}/${$('#count')?.value||6}`;return;}
  if(t.dataset.avatar!==undefined){avatar=+t.dataset.avatar;document.querySelectorAll('[data-avatar]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.avatar===avatar));return;}
  if(t.dataset.kick){if(confirm('Remove this player from the lobby?'))send('kick',{id:t.dataset.kick});return;}
  if(t.dataset.answer!==undefined){

@@ -87,3 +87,5 @@ Removed the decorative hero card and slogan strip. Added a centred introduction,
 ### GitHub Pages edition
 
 The Pages job publishes the tested, bundled dist artifact. The static-site suite checks desktop and phone layouts, complete six- and ten-question solo rounds, explicit unavailable-room messaging, builder, footer and persisted theme. Public multiplayer remains pending Cloudflare authorization.
+
+Join a Quiz and hosting setup remain visible before server connection. The static suite checks home PIN navigation, nickname and avatar controls, host setup, informative submission errors, re-enabled buttons and zero unavailable API requests at desktop and phone sizes. Solo practice respects the selected question count.
