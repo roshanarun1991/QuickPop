@@ -3,6 +3,8 @@ import {validateQuiz,cleanName} from './engine.js';
 import QRCode from 'qrcode';
 const $=s=>document.querySelector(s),main=$('#main'),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shapes=['▲','●','■','◆'],colors=['blue','yellow','green','pink'];
+const staticHost=location.hostname.endsWith('.github.io')||globalThis.QUICKPOP_STATIC===true;
+if(staticHost){const join=document.querySelector('.site-header nav a');join.href='#topics';join.textContent='PLAY SOLO ↗';}
 const memory=new Map();
 const read=(key,fallback)=>{if(memory.has(key))return memory.get(key);try{return JSON.parse(localStorage.getItem(`quickpop-${key}`))??fallback;}catch{return fallback;}};
 const write=(key,value)=>{memory.set(key,value);try{localStorage.setItem(`quickpop-${key}`,JSON.stringify(value));return true;}catch{toast('Playing without browser storage. Keep this tab open; export drafts to keep them.');return false;}};
@@ -50,9 +52,13 @@ function home(){
  <div class="filters" aria-label="Quiz categories">${['All',...CATEGORIES].map(c=>`<button class="chip" data-category="${esc(c)}" aria-pressed="${selectedCategory===c}">${esc(c)}</button>`).join('')}</div><div id="packs" class="pack-grid"></div><p class="hint" id="pack-count" aria-live="polite"></p></section>
  <section class="create-banner"><div><div class="eyebrow">MAKE IT PERSONAL</div><h2>INSIDE JOKES. OUTSIDE KNOWLEDGE.</h2><p>The office coffee order. That legendary team trip. Make a private quiz for the people who were there.</p></div><a class="btn paper" href="#builder">CREATE YOUR OWN +</a></section>
  <section class="how-grid" aria-label="How to play"><article><span class="step-no">01</span><div><h3>PICK A TOPIC</h3><p>Pop culture, places, food and a few friendly rivalries.</p></div></article><article><span class="step-no">02</span><div><h3>SHARE THE PIN</h3><p>Your colleagues join on their phones. No downloads.</p></div></article><article><span class="step-no">03</span><div><h3>LET IT GET COMPETITIVE</h3><p>Answer, reveal, celebrate. A rematch is always an option.</p></div></article></section></div>`);
+ if(staticHost){
+  const link=document.querySelector('.hero-actions a[href="#join"]');link.href='#builder';link.textContent='MAKE A QUIZ +';
+  document.querySelector('.join-card').innerHTML='<div><div class="eyebrow">PICK A PACK. TAKE YOUR TIME.</div><h3>YOUR SOLO QUIZ BREAK</h3><p>6 or 10 questions. No timer. Live rooms coming soon.</p></div>';
+  document.querySelector('.how-grid').innerHTML='<article><span class="step-no">01</span><div><h3>PICK A TOPIC</h3><p>Find a favourite from 20 quiz packs.</p></div></article><article><span class="step-no">02</span><div><h3>CHOOSE YOUR ROUND</h3><p>Play 6 or 10 questions at your own pace.</p></div></article><article><span class="step-no">03</span><div><h3>SHARE YOUR RESULT</h3><p>Save your score card and compare with colleagues.</p></div></article>';
+ }
  renderPacks();
- $('#quick-join').onsubmit=e=>{e.preventDefault();location.hash=`join/${$('#quick-pin').value}`;};
- $('#quick-pin').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
+ if($('#quick-join')){$('#quick-join').onsubmit=e=>{e.preventDefault();location.hash=`join/${$('#quick-pin').value}`;};$('#quick-pin').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);}
  $('#search').oninput=e=>{search=e.target.value;renderPacks();};
  if(location.hash==='#topics')$('#topics').scrollIntoView();
 }
@@ -65,6 +71,12 @@ function getPack(id){return id==='custom'?validateQuiz(draft):PACKS.find(p=>p.id
 function hostSetup(id){
  let pack;try{pack=getPack(id);}catch(e){location.hash='builder';toast(e.message);return;}
  if(!pack){location.hash='home';return;}
+ if(staticHost){
+  const counts=id==='custom'?[6,10,pack.questions.length].filter((n,i,a)=>n<=pack.questions.length&&a.indexOf(n)===i):[6,10];
+  setPage(`<div class="page narrow"><a class="back" href="#home">← ALL TOPICS</a><div class="panel"><div class="eyebrow">YOUR SOLO QUIZ BREAK</div><h1>${esc(pack.title)}</h1><p>${esc(pack.description||'Made by you. Ready to play.')}</p><div class="field"><label for="solo-count">Questions</label><select id="solo-count">${counts.map(n=>`<option value="${n}">${n} questions</option>`).join('')}</select></div><p>Take your time. See each answer and a short explanation as you play.</p><a class="btn" id="start-solo" href="#practice/${esc(id)}/${counts[0]}">LET’S PLAY ↗</a><p class="hint live-note">Live PIN rooms are coming soon. Solo games, Daily Pop and your private quiz builder work now.</p></div></div>`);
+  $('#solo-count').onchange=e=>$('#start-solo').href=`#practice/${id}/${e.target.value}`;
+  return;
+ }
  setPage(`<div class="page narrow"><a class="back" href="#home">← ALL TOPICS</a><div class="panel"><div class="setup-head"><div class="setup-icon ${pack.color||'pink'}">${pack.icon||'✎'}</div><div><div class="eyebrow">${esc(pack.category||'YOUR OWN CREATION')}</div><h1>${esc(pack.title)}</h1><p>${pack.questions.length} original questions · play at your pace</p></div></div><p>${esc(pack.description||'Made for your people. Ready for the big screen.')}</p>
  <form id="host-form">${fieldError()}<div class="two-col"><div class="field"><label for="count">Questions</label><select id="count">${(id==='custom'?[6,10,pack.questions.length].filter((n,i,a)=>n<=pack.questions.length&&a.indexOf(n)===i):[6,10]).map(n=>`<option value="${n}" ${n===Math.min(6,pack.questions.length)?'selected':''}>${n} questions</option>`).join('')}</select></div><div class="field"><label for="seconds">Time per question</label><select id="seconds"><option value="10">10 seconds · Quick</option><option value="15" selected>15 seconds · Classic</option><option value="20">20 seconds · Relaxed</option><option value="30">30 seconds · Extra time</option></select></div></div>
  <details class="details"><summary>MAKE IT YOUR KIND OF GAME</summary><label class="checkline"><input id="accuracy" type="checkbox">Accuracy scoring — no speed bonus</label><label class="checkline"><input id="auto" type="checkbox">Automatically continue after each reveal</label><label class="checkline"><input id="teams" type="checkbox">Show team scores too</label><label class="checkline"><input id="host-plays" type="checkbox">I’m playing on this screen too</label><div class="field"><label for="host-name">My nickname (if playing)</label><input id="host-name" value="Quiz Captain" maxlength="16"></div></details>
@@ -77,6 +89,7 @@ function hostSetup(id){
 }
 const randomName=()=>`${['Disco','Fika','Quiz','Lucky','Turbo','Cosmic'][Math.floor(Math.random()*6)]} ${['Fox','Panda','Pickle','Tiger','Otter','Kiwi'][Math.floor(Math.random()*6)]}`;
 function joinScreen(pin=''){
+ if(staticHost){setPage('<div class="page narrow"><div class="panel"><h1>SOLO NOW.<br>TOGETHER SOON.</h1><p>Live PIN rooms are not available on this site yet. Pick a topic, play Daily Pop or create a private quiz.</p><a class="btn" href="#topics">PICK A QUIZ ↗</a></div></div>');return;}
  setPage(`<div class="page narrow"><a class="back" href="#home">← BACK TO THE GOOD STUFF</a><div class="panel"><div class="eyebrow">A LITTLE PIN. A LOT OF POTENTIAL.</div><h1 style="font-size:58px;margin:12px 0">YOU’RE IN THE<br>RIGHT PLACE.</h1><form id="join-form">${fieldError()}<div class="field"><label for="pin">Four-digit game PIN</label><input class="pin-input" id="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000" value="${esc(pin.replace(/\D/g,'').slice(0,4))}" required></div><div class="field"><label for="nickname">Your nickname</label><div style="display:flex;gap:12px"><input id="nickname" maxlength="16" value="${esc(read('nickname',randomName()))}" required autocomplete="off"><button class="btn square paper" type="button" data-action="random-name" aria-label="Suggest a nickname">⚄</button></div></div><div class="field"><label>Pick your game face</label><div class="avatar-grid">${AVATARS.map((a,i)=>`<button type="button" class="avatar-btn" data-avatar="${i}" aria-label="Avatar ${i+1}: ${a}" aria-pressed="${avatar===i}">${a}</button>`).join('')}</div></div><div class="field"><label for="team">Team colour (if teams are on)</label><select id="team"><option value="0">Team Blue</option><option value="1">Team Yellow</option><option value="2">Team Green</option><option value="3">Team Pink</option></select></div><button class="btn cyan" type="submit" id="join-button" style="width:100%">LET ME IN ↗</button><p class="hint">Use a nickname, not your full name. No account needed.</p></form></div></div>`);
  $('#pin').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
  $('#join-form').onsubmit=async e=>{
@@ -168,10 +181,10 @@ function updateTimer(){
 setInterval(updateTimer,100);
 function selfAward(s){const p=s.board.find(p=>p.id===s.self.id);return `<div class="badge-strip"><span class="badge">#${p.rank} OF ${s.board.length}</span><span class="badge">${p.correctCount}/${s.total} CORRECT</span>${p.rank===1?'<span class="badge">♛ FIRST PLACE ENERGY</span>':''}${p.bestStreak>=3?'<span class="badge">🔥 ON A ROLL</span>':''}${p.wins?`<span class="badge">${p.wins} SERIES WIN${p.wins===1?'':'S'}</span>`:''}</div>`;}
 function recordLiveResult(s){if(!s.self)return;const p=s.board.find(p=>p.id===s.self.id),stats=read('stats',{});stats[s.packId]=Math.max(stats[s.packId]||0,p.score);write('stats',stats);}
-function soloStart(id){
+function soloStart(id,count){
  const daily=id==='daily',date=new Date().toISOString().slice(0,10),done=read('daily',{});
  if(daily&&done.date===date){solo={...done,done:true,pack:dailyPack(date),daily:true,date};soloResult();return;}
- const pack=daily?dailyPack(date):getPack(id);if(!pack){location.hash='home';return;}
+ let pack=daily?dailyPack(date):getPack(id);if(!pack){location.hash='home';return;}if(!daily&&[6,10].includes(Number(count)))pack={...pack,questions:pack.questions.slice(0,Number(count))};
  const saved=daily?read('daily-progress',null):null;
  solo={pack,daily,date,index:0,correct:0,answers:[],selected:[],revealed:false,...(saved?.date===date?{index:saved.index,correct:saved.correct,answers:saved.answers}:{} )};
  if(solo.index>=pack.questions.length){soloResult();return;}renderSolo();
@@ -283,7 +296,7 @@ function route(){
  else if(name==='join')joinScreen(id);
  else if(name==='room'&&/^\d{4}$/.test(id))roomRoute(id);
  else if(name==='daily')soloStart('daily');
- else if(name==='practice'){try{soloStart(id);}catch(e){location.hash='builder';toast(e.message);}}
+ else if(name==='practice'){try{soloStart(id,parts[2]);}catch(e){location.hash='builder';toast(e.message);}}
  else if(name==='builder')builder();
  else home();
 }

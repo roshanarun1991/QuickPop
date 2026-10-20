@@ -44,3 +44,4 @@ footer>.wordmark{justify-self:start}footer>#privacy{justify-self:end}
 }
 @media(prefers-reduced-motion:reduce){.powered-type{animation:none;width:15ch;border-right:0}}
 .powered-type{box-sizing:content-box}
+.live-note{margin:28px 0 0;line-height:1.7}.join-card p{font-size:12px;margin:8px 0 0}

@@ -83,3 +83,7 @@ Tests produce `test-results/browser-report.json`, screenshots and terminal test 
 ### Layout update
 
 Removed the decorative hero card and slogan strip. Added a centred introduction, spaced result note and persistent Powered by RANS credit. The credit types and erases with reduced-motion support. All 20 packs now have 10 questions and offer 6 or 10 per hosted game. Tests cover both lengths without repeats and the animated footer across routes.
+
+### GitHub Pages edition
+
+The Pages job publishes the tested, bundled dist artifact. The static-site suite checks desktop and phone layouts, complete six- and ten-question solo rounds, explicit unavailable-room messaging, builder, footer and persisted theme. Public multiplayer remains pending Cloudflare authorization.

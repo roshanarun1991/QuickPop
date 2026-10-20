@@ -8,6 +8,10 @@ A party-ready quiz for colleagues, friends and family. No accounts; join with a 
 
 See [DESIGN_REVIEW.md](DESIGN_REVIEW.md) for the review and deliberately deferred features, and [QA.md](QA.md) for checks and deployment acceptance.
 
+## Public GitHub Pages edition
+
+The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Live PIN rooms are explicitly unavailable there until the multiplayer service is connected. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
+
 ## Runs without your computer
 
 The entire site, room registry and multiplayer game server run on **Cloudflare Workers + SQLite Durable Objects**. Closing your computer does not stop it. GitHub stores the source and runs automated QA. There are no Google, AI or paid content APIs.
