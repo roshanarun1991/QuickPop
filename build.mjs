@@ -7,7 +7,11 @@ await copyFile('node_modules/@fontsource/courier-prime/files/courier-prime-latin
 for(const name of ['anton','courier-prime'])await copyFile(`node_modules/@fontsource/${name}/LICENSE`,`dist/${name}-LICENSE.txt`);
 await build({entryPoints:['app.js'],outfile:'dist/app.js',bundle:true,minify:true,format:'esm',target:'es2022'});
 const revision=process.env.GITHUB_SHA?.slice(0,12)||String(Date.now());
-const assets=['./','./index.html','./style.css','./theme.js','./app.js','./icon.svg','./manifest.webmanifest','./anton.woff2','./courier.woff2'];
+const versionedFiles=['style.css','theme.js','app.js'];
+let html=await readFile('dist/index.html','utf8');
+for(const file of versionedFiles)html=html.replaceAll(`./${file}`,`./${file}?v=${revision}`);
+await writeFile('dist/index.html',html);
+const assets=['./','./index.html',...versionedFiles.map(file=>`./${file}?v=${revision}`),'./icon.svg','./manifest.webmanifest','./anton.woff2','./courier.woff2'];
 await writeFile('dist/sw.js',`const CACHE='quickpop-${revision}';const ASSETS=${JSON.stringify(assets)};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('quickpop-')&&k!==CACHE).map(k=>caches.delete(k)))));});
