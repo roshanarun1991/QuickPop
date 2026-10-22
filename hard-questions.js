@@ -17,7 +17,7 @@ Who is called the Onion Knight?|Davos Seaworth|Jorah Mormont|Bronn|Barristan Sel
 Which city is associated with the Iron Bank?|Braavos|Pentos|Qarth|Volantis
 What is House Martell's seat?|Sunspear|Storm's End|Pyke|Dragonstone
 Who is Brienne's father?|Selwyn Tarth|Randyll Tarly|Jeor Mormont|Balon Greyjoy
-Which metal is also known as obsidian in the series?|Dragonglass|Valyrian steel|Gold|Iron
+Which material is also known as obsidian in the series?|Dragonglass|Valyrian steel|Gold|Iron
 Which house's words are We Do Not Sow?|Greyjoy|Tully|Arryn|Baratheon
 Who is nicknamed the Queen of Thorns?|Olenna Tyrell|Cersei Lannister|Lysa Arryn|Ellaria Sand`,
 'movie-night':`Who directed Spirited Away?|Hayao Miyazaki|Akira Kurosawa|Satoshi Kon|Isao Takahata
@@ -111,7 +111,7 @@ What is the capital of Slovenia?|Ljubljana|Bratislava|Zagreb|Sarajevo
 What is the capital of Oman?|Muscat|Salalah|Manama|Doha
 What is the capital of Ethiopia?|Addis Ababa|Asmara|Nairobi|Kampala`,
 food:`Which cheese is traditionally used in a classic Greek salad?|Feta|Halloumi|Manchego|Pecorino
-Which spice gives saffron rice its golden colour?|Saffron|Sumac|Paprika|Cardamom
+Which spice comes from the dried stigmas of Crocus sativus?|Saffron|Sumac|Paprika|Cardamom
 Which fermented soybean paste is used in Japanese soup?|Miso|Tahini|Gochujang|Harissa
 Which grain is traditionally used to make risotto?|Rice|Barley|Millet|Bulgur
 What is the main ingredient in tahini?|Sesame seeds|Chickpeas|Almonds|Sunflower seeds
@@ -184,8 +184,8 @@ Which company released the Mega Drive console?|Sega|Sony|Nintendo|NEC`,
 What happens to the colour of the square occupied by a knight after each legal move?|It always changes square colour|It always stays on one colour|Only when capturing|Only on its first move
 What is the only chess move that moves two pieces at once?|Castling|En passant|Promotion|Forking
 Which chess rule allows a special pawn capture immediately after a two-square pawn advance?|En passant|Castling|Stalemate|Promotion
-How many sides does a standard die used in Monopoly have?|6|4|8|12
-Which game uses tiles marked with paired numbers of spots?|Dominoes|Go|Reversi|Mancala
+How many tiles are in a standard double-six domino set?|28|21|36|49
+In Go, what term describes a group with only one liberty remaining?|Atari|Seki|Komi|Joseki
 What is the standard board size in modern tournament Go?|19 by 19|8 by 8|15 by 15|21 by 21
 In chess, what is a position with no legal move but no check called?|Stalemate|Checkmate|Zugzwang|Pin
 How many points is Z worth in standard English Scrabble?|10|8|6|4

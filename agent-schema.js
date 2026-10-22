@@ -2,7 +2,7 @@ import {validateQuiz} from './engine.js';
 export const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export function validateRequest(input){
  if(!input||!['generate','publish'].includes(input.action)||!UUID.test(input.requestId||''))throw Error('Invalid quiz request.');
- if(input.action==='publish')return {action:'publish',requestId:input.requestId};
+ if(input.action==='publish'){if(input.reviewed!==undefined&&(!/^[A-Za-z0-9_-]+$/.test(input.reviewed)||input.reviewed.length>6500))throw Error('The reviewed quiz is too large. Shorten the explanations.');return {action:'publish',requestId:input.requestId,...(input.reviewed?{reviewed:input.reviewed}:{})};}
  const topic=String(input.topic||'').normalize('NFKC').trim();
  if(topic.length<3||topic.length>100||/[\u0000-\u001f<>]/.test(topic))throw Error('Use a topic of 3–100 characters without markup.');
  if(!['easy','hard'].includes(input.difficulty))throw Error('Choose easy or hard.');
@@ -18,6 +18,7 @@ export function validateGenerated(value,request){
   if(q.fact.trim().length<10)throw Error('Every answer needs an explanation.');
   const key=q.text.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
   if(seen.has(key))throw Error('The generator repeated a question.');seen.add(key);
+  const ref=value.questions[i].reference;if(ref&&String(ref.url).startsWith('https://en.wikipedia.org/wiki/')&&typeof ref.quote==='string')q.reference={url:ref.url,quote:ref.quote.slice(0,400)};
   q.difficulty=request.difficulty;q.image=null;q.clue='';
  }
  return {...quiz,id:`generated-${request.requestId}`,title:quiz.title,category:'Community Quizzes',icon:'✦',color:'violet',description:`${request.topic} · ${request.difficulty} · AI drafted, owner reviewed`,difficulty:request.difficulty};

@@ -16,7 +16,7 @@ The site at https://roshanarun1991.github.io/QuickPop/ is built and published by
 
 The published solo website runs on **GitHub Pages**. Quiz generation runs on GitHub Actions using an open-source model on the runner. Neither needs your computer. Multiplayer is prepared for **Cloudflare Workers + SQLite Durable Objects**, but Cloudflare connection and deployment are still pending. No paid AI API key is required.
 
-The website has not been deployed until `wrangler deploy` succeeds and the live checks below pass. A GitHub source repository alone does not host the live rooms.
+The multiplayer service is not deployed until `wrangler deploy` succeeds and the live checks below pass. A GitHub source repository alone does not host the live rooms.
 
 ## Local development
 
@@ -90,6 +90,6 @@ Food illustrations, logo marks and flag diagrams are bundled locally, with optio
 
 Open `#admin` using the owner-provided passcode. Enter a topic and difficulty, prepare a request, then confirm the prepared issue while signed into GitHub as the repository owner. The free model may take several minutes (up to the 25-minute job limit). Return to Admin and check for the ten-question draft. Review every answer and explanation, tick the review box, then confirm publication on GitHub. QA must pass before Pages deploys.
 
-The client passcode is a convenience gate, not secure server authentication. GitHub owner checks authorize jobs; no GitHub credential is stored in the website. Topics, requests and drafts are public. Avoid confidential workplace information. AI output can contain factual errors: schema checks cannot establish truth. Builder edits are private and do not replace the public draft; use a new request if the draft is unsuitable. There is no paid fallback. Standard GitHub-hosted jobs in this public repository are used; availability and GitHub usage policies still apply.
+The client passcode is a convenience gate, not secure server authentication. GitHub owner checks authorize jobs; no GitHub credential is stored in the website. Topics, requests and drafts are public. Avoid confidential workplace information. AI output can contain factual errors: schema checks cannot establish truth. Use the inline review editor to correct any question, choices, answer or explanation before publication. The prepared GitHub request includes the corrected quiz. Builder exports remain private. There is no paid fallback. Standard GitHub-hosted jobs in this public repository are used; availability and GitHub usage policies still apply.
 
-The agent uses `qwen2.5:3b` through Ollama. It does not use the retired GitHub Models API. Agent publication calls the reusable QA workflow explicitly because pushes made using GITHUB_TOKEN do not trigger ordinary push workflows.
+The agent retrieves a public Wikipedia reference, then uses `qwen2.5:3b` through Ollama. Each generated question must include an exact excerpt containing its answer; Admin shows the source link and excerpt for review. This evidence check reduces unsupported content but cannot prove the question or answer is correct. Wikipedia material is attributed under CC BY-SA 4.0. It does not use the retired GitHub Models API. Agent publication calls the reusable QA workflow explicitly because pushes made using GITHUB_TOKEN do not trigger ordinary push workflows.

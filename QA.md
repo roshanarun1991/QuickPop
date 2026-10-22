@@ -96,8 +96,10 @@ Solo and Daily Pop answer controls sit in a fixed bottom bar with safe-area padd
 
 ## Topic and agent release — 22 October 2026
 
-Local acceptance: 19 engine tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 200 players, four resilience checks, and 17 new-feature checks.
+Local acceptance: 20 engine tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 200 players, four resilience checks, and 17 new-feature checks.
 
 New-feature coverage: 26 curated packs with ten easy and ten hard questions each; valid bundled illustrations, flags and marks; keyboard suggestions and Coming soon; phone/desktop picture rendering; fixed Next control; invalid password rejection; prepared GitHub request; mocked ten-question draft preview; review checkbox required before preparing publication; invalid request and generated-output rejection. CI uses a test-only WebCrypto result to unlock Admin after testing incorrect-password rejection, without committing the owner's passcode. The real passcode is checked separately. AI factual accuracy requires review and is not certified by schema tests.
 
 Release acceptance: GitHub QA and Pages deployment green; public site loads new topics; run an owner generation request on GitHub, review its ten answers, then test approved publication and deployed catalogue. Cloudflare production multiplayer remains deferred.
+
+The first live model draft contained factual errors and was not published. The agent was revised to retrieve reference material and require supporting excerpts. Admin gained an inline correction editor; editing resets review confirmation, and corrected content is compressed into the owner-authorized publication request.
