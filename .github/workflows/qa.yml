@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   qa:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install chromium
       - name: Start local Cloudflare runtime
         run: |
           npx wrangler dev --ip 127.0.0.1 --port 8787 --local > /tmp/quickpop-server.log 2>&1 &
@@ -52,7 +52,7 @@ jobs:
   pages:
     needs: qa
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pages: write
@@ -74,7 +74,7 @@ jobs:
   deploy:
     needs: qa
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
