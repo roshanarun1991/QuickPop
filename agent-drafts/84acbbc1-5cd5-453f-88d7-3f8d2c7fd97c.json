@@ -1,0 +1,11 @@
+{
+  "action": "generate",
+  "requestId": "84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c",
+  "topic": "Solar System",
+  "difficulty": "easy",
+  "issueNumber": 2,
+  "source": "https://github.com/roshanarun1991/QuickPop/issues/2",
+  "createdAt": "2026-10-22T15:44:33.035Z",
+  "status": "failed",
+  "error": "The free generator could not finish this request. Check the GitHub Actions log and submit a fresh request. No paid fallback was used."
+}
