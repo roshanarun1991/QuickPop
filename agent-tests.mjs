@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {generateQuiz} from './agent-generate.mjs';
 import {checkEvidence} from './agent-sources.mjs';
 import {sourceClues} from './agent-clues.mjs';
+import {validateGenerated} from './agent-schema.js';
 const facts=['Mercury is the closest planet to the Sun in our solar system.','Venus has a dense atmosphere composed mainly of carbon dioxide.','Earth is the third planet from the Sun in our solar system.','Mars is commonly called the Red Planet because of its iron-rich surface.','Jupiter is the largest planet in our solar system by diameter.','Saturn is well known for its prominent ring system of ice particles.','Uranus rotates with its axis tilted strongly relative to its orbit.','Neptune is the outermost of the eight planets in our solar system.','Sun is the name of the star at the centre of our solar system.','Moon is the usual name for the natural satellite of planet Earth.'];
 const candidate=i=>({text:`Which object is described in reference fact ${i+1}?`,options:[facts[i].split(' ')[0],'Pluto','Ceres','Eris'],correct:[0],fact:facts[i],sourceIndex:i});
 test('Agent streams output, retains valid questions and attaches exact source excerpts',async()=>{
@@ -23,4 +24,9 @@ test('Source-based fallback fills ten supported, distinct multiple-choice clues'
  const clues=sourceClues(ref,[],10,'easy');assert.equal(clues.length,10);assert.equal(new Set(clues.map(q=>q.text)).size,10);
  for(const q of clues){assert(q.text.includes('____'));assert(q.reference.quote.includes(q.options[0]));assert.equal(new Set(q.options).size,4);assert(q.options.slice(1).every(o=>!q.reference.quote.includes(o)));assert(q.text.length<=240);}
  assert(sourceClues(ref,clues,1,'easy').every(q=>!clues.some(old=>old.reference.quote===q.reference.quote)));
+});
+test('Malformed model explanations cannot be published',()=>{
+ const value={title:'Solar System',questions:Array.from({length:10},(_,i)=>candidate(i))};
+ value.questions[0].fact='].(66.)},{';
+ assert.throws(()=>validateGenerated(value,{requestId:'11111111-1111-4111-8111-111111111111',topic:'Solar System',difficulty:'easy'}),/readable explanation/);
 });

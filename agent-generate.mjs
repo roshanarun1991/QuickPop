@@ -26,7 +26,7 @@ export async function generateQuiz(request){
     try{
      const quote=checkEvidence({questions:[candidate]},reference)[0];
      const q=validateQuiz({title:'Draft quiz',questions:[candidate,candidate,candidate]}).questions[0];
-     if(q.options.length!==4||q.correct.length!==1||q.fact.length<10)throw Error('Use four choices, one correct answer and an explanation.');
+     if(q.options.length!==4||q.correct.length!==1||q.fact.length<10||(q.fact.match(/[A-Za-z]{2,}/g)||[]).length<4)throw Error('Use four choices, one correct answer and a readable explanation of at least four words.');
      const key=q.text.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');if(seen.has(key))throw Error('Do not repeat an accepted question.');
      seen.add(key);q.reference={url:reference.url,quote};q.generationMethod='model';accepted.push(q);if(accepted.length===10)break;
     }catch(error){lastError=error.message;}

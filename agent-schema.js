@@ -15,7 +15,7 @@ export function validateGenerated(value,request){
  for(const [i,q] of quiz.questions.entries()){
   q.id=`generated-${request.requestId}-${i}`;
   if(q.options.length!==4||q.correct.length!==1)throw Error('Generated questions need four choices and one correct answer.');
-  if(q.fact.trim().length<10)throw Error('Every answer needs an explanation.');
+  if(q.fact.trim().length<10||(q.fact.match(/[A-Za-z]{2,}/g)||[]).length<4)throw Error('Every answer needs a readable explanation of at least four words.');
   const key=q.text.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
   if(seen.has(key))throw Error('The generator repeated a question.');seen.add(key);
   const ref=value.questions[i].reference;if(ref&&String(ref.url).startsWith('https://en.wikipedia.org/wiki/')&&typeof ref.quote==='string')q.reference={url:ref.url,quote:ref.quote.slice(0,400)};
