@@ -1,0 +1,74 @@
+name: QuickPop - free quiz agent
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: quickpop-quiz-agent
+  cancel-in-progress: false
+jobs:
+  generate:
+    if: github.actor == github.repository_owner && github.event.issue.user.login == github.repository_owner && startsWith(github.event.issue.title, '[QuickPop ')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      issues: write
+    outputs:
+      action: ${{ steps.request.outputs.action }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate owner and request
+        id: request
+        run: node agent-run.mjs prepare
+      - name: Install free local model runtime on GitHub runner
+        if: steps.request.outputs.action == 'generate'
+        run: |
+          curl -fsSL https://ollama.com/install.sh -o /tmp/ollama-install.sh
+          sh /tmp/ollama-install.sh
+          ollama serve > /tmp/ollama.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:11434/api/tags; then break; fi
+            sleep 2
+          done
+          ollama pull qwen2.5:3b
+      - name: Generate ten draft questions
+        if: steps.request.outputs.action == 'generate'
+        run: node agent-run.mjs generate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Publish owner-reviewed draft
+        if: steps.request.outputs.action == 'publish'
+        run: node agent-run.mjs publish
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Record generation failure
+        if: failure()
+        run: node agent-run.mjs fail
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Save result in repository
+        if: always() && steps.request.outcome == 'success'
+        run: |
+          git config user.name 'QuickPop quiz agent'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add agent-drafts generated-packs.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Save quiz agent result"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+  publish:
+    needs: generate
+    if: needs.generate.outputs.action == 'publish'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/qa.yml
