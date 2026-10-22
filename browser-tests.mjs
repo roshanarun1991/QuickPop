@@ -97,7 +97,10 @@ try{
  check('Full game reaches podium');await accessibility(host.page,'Host podium');
  await host.page.screenshot({path:'test-results/host-podium.png',fullPage:true});
  await host.page.locator('[data-action="rematch"]').click();await player.page.locator('#room-view[data-phase="lobby"]').waitFor();
- check('Rematch retains player session');check('Rematch increments series round',await host.page.getByText('YOU’RE HOSTING · ROUND 2').isVisible());
+ check('Rematch retains player session');
+ // Host and player receive separate socket updates; wait for both before asserting.
+ await host.page.getByText('YOU’RE HOSTING · ROUND 2').waitFor();
+ check('Rematch increments series round');
  host.page.once('dialog',d=>d.accept());await host.page.locator('[data-action="close-room"]').click();await player.page.locator('.hero').waitFor();check('Closing a room returns players home');
  await host.context.close();await player.context.close();
  check('No browser JavaScript exceptions',pageErrors.length===0);
