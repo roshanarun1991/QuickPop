@@ -7,7 +7,8 @@ export async function referenceFor(topic){
  const result2=await query({prop:'extracts',explaintext:'1',redirects:'1',titles:titles[0]});
  const page=Object.values(result2?.pages||{}).find(p=>p.extract?.length>500);
  if(!page)throw Error('Not enough reference material for ten questions. Try a more specific topic.');
- return {title:page.title,url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replaceAll(' ','_'))}`,text:page.extract.slice(0,9000),license:'CC BY-SA 4.0',retrievedAt:new Date().toISOString()};
+ const text=page.extract.slice(0,12000).replace(/^=.+=$/gm,'').replace(/\s+/g,' ');const facts=[...new Intl.Segmenter('en',{granularity:'sentence'}).segment(text)].map(x=>x.segment.trim()).filter(x=>x.length>=40&&x.length<=400).slice(0,45).map((text,index)=>({index,text}));if(facts.length<10)throw Error('Not enough reference facts. Try a more specific topic.');
+ return {facts,title:page.title,url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replaceAll(' ','_'))}`,text:page.extract.slice(0,9000),license:'CC BY-SA 4.0',retrievedAt:new Date().toISOString()};
 }
 export const normalizeEvidence=s=>String(s).normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
-export function checkEvidence(value,reference){for(const q of value.questions||[]){const quote=normalizeEvidence(q.sourceQuote),answer=normalizeEvidence(q.options?.[q.correct?.[0]]);if(quote.length<20||quote.length>400||!normalizeEvidence(reference.text).includes(quote)||!quote.includes(answer))throw Error('Each question needs an exact reference excerpt containing its correct answer. Copy a short supporting sentence from the provided source.');}}
+export function checkEvidence(value,reference){return (value.questions||[]).map(q=>{const fact=reference.facts?.find(f=>f.index===q.sourceIndex);const answer=normalizeEvidence(q.options?.[q.correct?.[0]]).replace(/^(the|a|an) /,'');if(!fact||!answer||!normalizeEvidence(fact.text).includes(answer))throw Error('Choose a valid sourceIndex and copy the correct answer phrase exactly from that fact.');return fact.text;});}
