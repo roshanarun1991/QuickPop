@@ -1,0 +1,205 @@
+{
+  "action": "generate",
+  "requestId": "42ed25b3-2542-4841-8e7a-72644a1d24a6",
+  "topic": "Solar System",
+  "difficulty": "easy",
+  "issueNumber": 1,
+  "source": "https://github.com/roshanarun1991/QuickPop/issues/1",
+  "createdAt": "2026-10-22T15:34:56.287Z",
+  "status": "ready",
+  "model": "qwen2.5:3b",
+  "reviewRequired": true,
+  "quiz": {
+    "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6",
+    "title": "Solar System Facts Quiz",
+    "icon": "✦",
+    "color": "violet",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-0",
+        "text": "What is the closest planet to the Sun?",
+        "options": [
+          "Mercury",
+          "Venus",
+          "Earth",
+          "Mars"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Mercury is the closest planet to the Sun.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-1",
+        "text": "Which planet has the most moons?",
+        "options": [
+          "Mars",
+          "Jupiter",
+          "Saturn",
+          "Uranus"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "Jupiter has the most known moons, with over 79.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-2",
+        "text": "What is the largest planet in our solar system?",
+        "options": [
+          "Mars",
+          "Jupiter",
+          "Saturn",
+          "Uranus"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "Jupiter is the largest planet in our solar system.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-3",
+        "text": "Which planet is known for its Great Red Spot?",
+        "options": [
+          "Mars",
+          "Jupiter",
+          "Saturn",
+          "Uranus"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "The Great Red Spot is a giant storm on Jupiter.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-4",
+        "text": "What planet has the most volcanic activity?",
+        "options": [
+          "Mars",
+          "Venus",
+          "Jupiter",
+          "Saturn"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "Venus has the most volcanic activity in our solar system.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-5",
+        "text": "Which planet has the most rings?",
+        "options": [
+          "Mars",
+          "Jupiter",
+          "Saturn",
+          "Uranus"
+        ],
+        "correct": [
+          2
+        ],
+        "type": "single",
+        "fact": "Saturn has the most extensive and well-known rings.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-6",
+        "text": "What planet is known for its blue sky?",
+        "options": [
+          "Mars",
+          "Venus",
+          "Saturn",
+          "Uranus"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "Venus has a blue sky due to its thick clouds and carbon dioxide atmosphere.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-7",
+        "text": "Which planet has the largest canyon system in the solar system?",
+        "options": [
+          "Mars",
+          "Venus",
+          "Jupiter",
+          "Saturn"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Mars has the largest canyon system, Valles Marineris.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-8",
+        "text": "What planet has the most extreme temperature variations?",
+        "options": [
+          "Mars",
+          "Venus",
+          "Jupiter",
+          "Saturn"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "Venus has the most extreme temperature variations, with surface temperatures reaching over 460°C.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      },
+      {
+        "id": "generated-42ed25b3-2542-4841-8e7a-72644a1d24a6-9",
+        "text": "Which planet has the most geologically active surface?",
+        "options": [
+          "Mars",
+          "Venus",
+          "Jupiter",
+          "Saturn"
+        ],
+        "correct": [
+          1
+        ],
+        "type": "single",
+        "fact": "Venus has the most geologically active surface with ongoing volcanic activity.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy"
+      }
+    ],
+    "category": "Community Quizzes",
+    "description": "Solar System · easy · AI drafted, owner reviewed",
+    "source": "https://github.com/roshanarun1991/QuickPop/issues/1"
+  },
+  "completedAt": "2026-10-22T15:36:53.250Z"
+}
