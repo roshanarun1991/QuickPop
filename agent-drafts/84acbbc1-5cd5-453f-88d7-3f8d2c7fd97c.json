@@ -5,7 +5,257 @@
   "difficulty": "easy",
   "issueNumber": 2,
   "source": "https://github.com/roshanarun1991/QuickPop/issues/2",
-  "createdAt": "2026-10-22T16:12:14.650Z",
-  "status": "failed",
-  "error": "The free generator could not finish this request. Check the GitHub Actions log and submit a fresh request. No paid fallback was used."
+  "createdAt": "2026-10-22T16:25:15.887Z",
+  "status": "ready",
+  "model": "qwen2.5:3b",
+  "reviewRequired": true,
+  "reference": {
+    "title": "Solar System",
+    "url": "https://en.wikipedia.org/wiki/Solar_System",
+    "license": "CC BY-SA 4.0",
+    "retrievedAt": "2026-10-22T16:26:15.238Z"
+  },
+  "quiz": {
+    "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c",
+    "title": "Solar System Quiz",
+    "icon": "✦",
+    "color": "violet",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-0",
+        "text": "What will be the surface temperature of the Sun when it becomes a red giant?",
+        "options": [
+          "2,600 K (4,220 °F)",
+          "1,000 K (1,832 °F)",
+          "5,000 K (8,547 °F)",
+          "3,000 K (5,113 °F)"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "].(66.)},{",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "Because of its increased surface area, the surface of the Sun will be cooler (2,600 K (4,220 °F) at its coolest) than it is on the main sequence."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-1",
+        "text": "Which of the following planets will be vaporized by the Sun when it becomes a red giant?",
+        "options": [
+          "Venus",
+          "Earth",
+          "Mars",
+          "Mercury"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "].(67.)},{",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The expanding Sun is expected to vaporize Mercury as well as Venus, and render Earth and Mars uninhabitable (possibly destroying Earth as well)."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-2",
+        "text": "Fill the gap: The ____ accounts for 99.86% of the Solar System's total mass.",
+        "options": [
+          "Sun",
+          "Earth",
+          "Milky Way Galaxy",
+          "Mercury"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The Sun accounts for 99.86% of the Solar System's total mass.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Sun accounts for 99.86% of the Solar System's total mass."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-3",
+        "text": "Fill the gap: NASA describes the solar system as including the ____ and its planetary system.",
+        "options": [
+          "Sun",
+          "Solar System",
+          "Earth",
+          "Milky Way Galaxy"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "NASA describes the solar system as including the Sun and its planetary system.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "NASA describes the solar system as including the Sun and its planetary system."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-4",
+        "text": "Fill the gap: Astronomers sometimes divide the ____ structure into separate regions.",
+        "options": [
+          "Solar System",
+          "Sun",
+          "Earth",
+          "Milky Way Galaxy"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Astronomers sometimes divide the Solar System structure into separate regions.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "Astronomers sometimes divide the Solar System structure into separate regions."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-5",
+        "text": "Fill the gap: ____ and Saturn possess nearly 90% of the non-stellar mass of the Solar System.",
+        "options": [
+          "Jupiter",
+          "Sun",
+          "Earth",
+          "Milky Way Galaxy"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Jupiter and Saturn possess nearly 90% of the non-stellar mass of the Solar System.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "Jupiter and Saturn possess nearly 90% of the non-stellar mass of the Solar System."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-6",
+        "text": "Fill the gap: The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and ____.",
+        "options": [
+          "Saturn",
+          "Solar System",
+          "Earth",
+          "Milky Way Galaxy"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and Saturn.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and Saturn."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-7",
+        "text": "Fill the gap: The closest star to the Solar System, ____, is 269,000 AU (4.25 ly) away.",
+        "options": [
+          "Proxima Centauri",
+          "Sun",
+          "Earth",
+          "Milky Way Galaxy"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The closest star to the Solar System, Proxima Centauri, is 269,000 AU (4.25 ly) away.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The closest star to the Solar System, Proxima Centauri, is 269,000 AU (4.25 ly) away."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-8",
+        "text": "Fill the gap: The Solar System currently moves through a cloud of interstellar medium called the ____.",
+        "options": [
+          "Local Cloud",
+          "Sun",
+          "Earth",
+          "Milky Way Galaxy"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The Solar System currently moves through a cloud of interstellar medium called the Local Cloud.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Solar System currently moves through a cloud of interstellar medium called the Local Cloud."
+        },
+        "generationMethod": "reference-clue"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-9",
+        "text": "Fill the gap: The ____ includes the Sun and all objects that are bound to it by gravity and orbit it.",
+        "options": [
+          "Solar System",
+          "Earth",
+          "Milky Way Galaxy",
+          "Mercury"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The Solar System includes the Sun and all objects that are bound to it by gravity and orbit it.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Solar System includes the Sun and all objects that are bound to it by gravity and orbit it."
+        },
+        "generationMethod": "reference-clue"
+      }
+    ],
+    "category": "Community Quizzes",
+    "description": "Solar System · easy · AI assisted, owner reviewed",
+    "source": "https://en.wikipedia.org/wiki/Solar_System"
+  },
+  "completedAt": "2026-10-22T16:27:54.317Z"
 }
