@@ -96,7 +96,7 @@ Solo and Daily Pop answer controls sit in a fixed bottom bar with safe-area padd
 
 ## Topic and agent release — 22 October 2026
 
-Local acceptance: 22 engine/agent tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 200 players, four resilience checks, and 25 new-feature checks.
+Local acceptance: 23 engine/agent tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 200 players, four resilience checks, and 25 new-feature checks.
 
 New-feature coverage: 26 curated packs with ten easy and ten hard questions each; valid bundled illustrations, flags and marks; keyboard suggestions and Coming soon; phone/desktop picture rendering; fixed Next control; invalid password rejection; prepared GitHub request; mocked ten-question draft preview; review checkbox required before preparing publication; invalid request and generated-output rejection. CI uses a test-only WebCrypto result to unlock Admin after testing incorrect-password rejection, without committing the owner's passcode. The real passcode is checked separately. AI factual accuracy requires review and is not certified by schema tests.
 
@@ -105,5 +105,7 @@ Release acceptance: GitHub QA and Pages deployment green; public site loads new 
 The first live model draft contained factual errors and was not published. The agent was revised to retrieve reference material and require supporting excerpts. Admin gained an inline correction editor; editing resets review confirmation, and corrected content is compressed into the owner-authorized publication request.
 
 Agent regression tests cover streamed responses, exact source attachment, rejection of unsupported answers and retaining valid questions between batches. The model selects numbered facts; the application attaches the original excerpt. Browser rematch QA waits for the independent host and player socket updates before checking both screens.
+
+The free model sometimes supplies too few valid questions. A tested source-clue fallback completes the draft by removing a name from an exact source sentence and offering four choices. It excludes choices present elsewhere in that sentence and avoids context-dependent sentence openings. This improves completion without claiming model output is inherently accurate.
 
 Eight additional mobile/desktop accessibility scans cover Admin, difficulty setup, a picture round and expanded search suggestions. Card and sound-control accessible names were corrected. Published-site checks: 40 static checks and the new-feature suite passed on the GitHub Pages URL.

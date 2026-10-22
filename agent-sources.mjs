@@ -7,7 +7,7 @@ export async function referenceFor(topic){
  const result2=await query({prop:'extracts',explaintext:'1',redirects:'1',titles:titles[0]});
  const page=Object.values(result2?.pages||{}).find(p=>p.extract?.length>500);
  if(!page)throw Error('Not enough reference material for ten questions. Try a more specific topic.');
- const text=page.extract.slice(0,12000).replace(/^=.+=$/gm,'').replace(/\s+/g,' ');const facts=[...new Intl.Segmenter('en',{granularity:'sentence'}).segment(text)].map(x=>x.segment.trim()).filter(x=>x.length>=40&&x.length<=400).slice(0,45).map((text,index)=>({index,text}));if(facts.length<10)throw Error('Not enough reference facts. Try a more specific topic.');
+ const text=page.extract.slice(0,24000).replace(/^=.+=$/gm,'').replace(/\s+/g,' ');const facts=[...new Intl.Segmenter('en',{granularity:'sentence'}).segment(text)].map(x=>x.segment.trim()).filter(x=>x.length>=40&&x.length<=400).slice(0,80).map((text,index)=>({index,text}));if(facts.length<10)throw Error('Not enough reference facts. Try a more specific topic.');
  return {facts,title:page.title,url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replaceAll(' ','_'))}`,text:page.extract.slice(0,9000),license:'CC BY-SA 4.0',retrievedAt:new Date().toISOString()};
 }
 export const normalizeEvidence=s=>String(s).normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();

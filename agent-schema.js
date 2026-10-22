@@ -20,6 +20,7 @@ export function validateGenerated(value,request){
   if(seen.has(key))throw Error('The generator repeated a question.');seen.add(key);
   const ref=value.questions[i].reference;if(ref&&String(ref.url).startsWith('https://en.wikipedia.org/wiki/')&&typeof ref.quote==='string')q.reference={url:ref.url,quote:ref.quote.slice(0,400)};
   q.difficulty=request.difficulty;q.image=null;q.clue='';
+  q.generationMethod=value.questions[i].generationMethod==='reference-clue'?'reference-clue':'model';
  }
- return {...quiz,id:`generated-${request.requestId}`,title:quiz.title,category:'Community Quizzes',icon:'✦',color:'violet',description:`${request.topic} · ${request.difficulty} · AI drafted, owner reviewed`,difficulty:request.difficulty};
+ return {...quiz,id:`generated-${request.requestId}`,title:quiz.title,category:'Community Quizzes',icon:'✦',color:'violet',description:`${request.topic} · ${request.difficulty} · AI assisted, owner reviewed`,difficulty:request.difficulty};
 }
