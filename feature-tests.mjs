@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import {gunzipSync} from 'node:zlib';
 import {checkEvidence} from './agent-sources.mjs';
 import {chromium} from 'playwright';
@@ -18,6 +19,7 @@ const quiz=validateGenerated(chooseDifficulty(PACKS.find(p=>p.id==='science'),'e
 const browser=await chromium.launch({headless:true});await mkdir('test-results',{recursive:true});
 try{for(const width of [390,1440]){
  const ctx=await browser.newContext({viewport:{width,height:844},serviceWorkers:'block',reducedMotion:'reduce'});await ctx.addInitScript(()=>window.QUICKPOP_STATIC=true);const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ for(const route of ['#admin','#host/guess-food','#practice/guess-logo/6/hard','#home']){await page.goto(base+route);await page.locator('main h1').waitFor();if(route==='#home')await page.locator('#search').fill('flag');const result=await new AxeBuilder({page}).analyze();assert.deepEqual(result.violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id),[]);pass(`${width}px accessible ${route}`);}
  await page.goto(base);await page.locator('#search').fill('logo');await page.getByRole('option').first().waitFor();await page.locator('#search').press('ArrowDown');await page.locator('#search').press('Enter');assert.equal(await page.locator('.pack').count(),1);assert.equal(await page.locator('#search').inputValue(),'Guess the Logo');pass(`${width}px keyboard suggestions select a topic`);
  await page.locator('#search').fill('no-such-topic-xyz');await page.getByRole('heading',{name:'COMING SOON'}).waitFor();await page.locator('[data-action="clear-search"]').click();assert.equal(await page.locator('.pack').count(),PACKS.length);pass(`${width}px missing topic and clear search`);
  for(const id of ['guess-food','guess-logo','guess-flag']){

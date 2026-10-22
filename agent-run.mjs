@@ -35,7 +35,7 @@ if(stage==='prepare'){
  const reviewed=request.reviewed?JSON.parse(gunzipSync(Buffer.from(request.reviewed,'base64url'),{maxOutputLength:40000}).toString('utf8')):draft.quiz;
  const quiz=validateGenerated(reviewed,draft);quiz.source=draft.reference?.url||draft.quiz.source||draft.source;
  const packs=JSON.parse(await readFile('generated-packs.json','utf8'));
- if(!packs.some(p=>p.id===quiz.id))packs.push(quiz);
+ const existing=packs.findIndex(p=>p.id===quiz.id);if(existing<0)packs.push(quiz);else packs[existing]=quiz;
  await writeFile('generated-packs.json',JSON.stringify(packs,null,2)+'\n');
  await save(request.requestId,{...draft,quiz,status:'published',publishedAt:new Date().toISOString()});
  await comment('The reviewed quiz has been added to the catalogue. Automated QA and GitHub Pages deployment run next. If QA fails, the currently published website stays unchanged.');
