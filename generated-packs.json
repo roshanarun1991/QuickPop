@@ -1,1 +1,244 @@
-[]
+[
+  {
+    "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c",
+    "title": "Solar System Quiz",
+    "icon": "✦",
+    "color": "violet",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-0",
+        "text": "What will the Sun become as it expands late in its life?",
+        "options": [
+          "A red giant",
+          "A black hole",
+          "A neutron star",
+          "A blue supergiant"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The Sun will expand into a red giant before eventually leaving a white dwarf.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "Because of its increased surface area, the surface of the Sun will be cooler (2,600 K (4,220 °F) at its coolest) than it is on the main sequence."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-1",
+        "text": "Which inner planet, besides Mercury, is expected to be engulfed by the expanding Sun?",
+        "options": [
+          "Venus",
+          "Neptune",
+          "Uranus",
+          "Jupiter"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "As the Sun expands into a red giant, it is expected to engulf Mercury and Venus.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The expanding Sun is expected to vaporize Mercury as well as Venus, and render Earth and Mars uninhabitable (possibly destroying Earth as well)."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-2",
+        "text": "Which object contains more than 99% of the mass in our solar system?",
+        "options": [
+          "The Sun",
+          "Jupiter",
+          "Earth",
+          "Neptune"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "The Sun contains approximately 99.86% of the total mass of our solar system.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Sun accounts for 99.86% of the Solar System's total mass."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-3",
+        "text": "Which star lies at the centre of our solar system?",
+        "options": [
+          "The Sun",
+          "Sirius",
+          "Polaris",
+          "Proxima Centauri"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Our solar system is centred on the Sun, the star that the planets orbit.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "NASA describes the solar system as including the Sun and its planetary system."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-4",
+        "text": "What is the name of the planetary system that contains Earth?",
+        "options": [
+          "The Solar System",
+          "The Andromeda Galaxy",
+          "The Orion Nebula",
+          "The Alpha Centauri system"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Earth belongs to the Solar System, which includes the Sun and the objects orbiting it.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "Astronomers sometimes divide the Solar System structure into separate regions."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-5",
+        "text": "Which planet, together with Saturn, holds most of the solar system’s mass outside the Sun?",
+        "options": [
+          "Jupiter",
+          "Earth",
+          "Mars",
+          "Mercury"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Jupiter and Saturn together hold nearly 90% of the mass outside the Sun.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "Jupiter and Saturn possess nearly 90% of the non-stellar mass of the Solar System."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-6",
+        "text": "Which gas giant, like Jupiter, is made mainly of hydrogen and helium?",
+        "options": [
+          "Saturn",
+          "Earth",
+          "Mars",
+          "Mercury"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Jupiter and Saturn are gas giants composed mainly of hydrogen and helium.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and Saturn."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-7",
+        "text": "Beyond the Sun, which star is closest to us?",
+        "options": [
+          "Proxima Centauri",
+          "Sirius",
+          "Vega",
+          "Betelgeuse"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Proxima Centauri is our nearest stellar neighbour, about 4.25 light-years away.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The closest star to the Solar System, Proxima Centauri, is 269,000 AU (4.25 ly) away."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-8",
+        "text": "Which cloud of interstellar gas surrounds our solar system?",
+        "options": [
+          "The Local Interstellar Cloud",
+          "The Orion Nebula",
+          "The Eagle Nebula",
+          "The Crab Nebula"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Our solar system is in a region of interstellar gas called the Local Interstellar Cloud, also called the Local Cloud.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Solar System currently moves through a cloud of interstellar medium called the Local Cloud."
+        },
+        "generationMethod": "model"
+      },
+      {
+        "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-9",
+        "text": "What force holds the solar system together?",
+        "options": [
+          "Gravity",
+          "Magnetism",
+          "Sound",
+          "Electric current"
+        ],
+        "correct": [
+          0
+        ],
+        "type": "single",
+        "fact": "Gravity binds the Sun and the objects that orbit it into the solar system.",
+        "image": null,
+        "clue": "",
+        "difficulty": "easy",
+        "reference": {
+          "url": "https://en.wikipedia.org/wiki/Solar_System",
+          "quote": "The Solar System includes the Sun and all objects that are bound to it by gravity and orbit it."
+        },
+        "generationMethod": "model"
+      }
+    ],
+    "category": "Community Quizzes",
+    "description": "Solar System · easy · AI assisted, owner reviewed",
+    "source": "https://en.wikipedia.org/wiki/Solar_System"
+  }
+]

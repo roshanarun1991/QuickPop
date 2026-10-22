@@ -6,7 +6,7 @@
   "issueNumber": 2,
   "source": "https://github.com/roshanarun1991/QuickPop/issues/2",
   "createdAt": "2026-10-22T16:25:15.887Z",
-  "status": "ready",
+  "status": "published",
   "model": "qwen2.5:3b",
   "reviewRequired": true,
   "reference": {
@@ -24,18 +24,18 @@
     "questions": [
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-0",
-        "text": "What will be the surface temperature of the Sun when it becomes a red giant?",
+        "text": "What will the Sun become as it expands late in its life?",
         "options": [
-          "2,600 K (4,220 °F)",
-          "1,000 K (1,832 °F)",
-          "5,000 K (8,547 °F)",
-          "3,000 K (5,113 °F)"
+          "A red giant",
+          "A black hole",
+          "A neutron star",
+          "A blue supergiant"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "].(66.)},{",
+        "fact": "The Sun will expand into a red giant before eventually leaving a white dwarf.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -47,18 +47,18 @@
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-1",
-        "text": "Which of the following planets will be vaporized by the Sun when it becomes a red giant?",
+        "text": "Which inner planet, besides Mercury, is expected to be engulfed by the expanding Sun?",
         "options": [
           "Venus",
-          "Earth",
-          "Mars",
-          "Mercury"
+          "Neptune",
+          "Uranus",
+          "Jupiter"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "].(67.)},{",
+        "fact": "As the Sun expands into a red giant, it is expected to engulf Mercury and Venus.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -70,18 +70,18 @@
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-2",
-        "text": "Fill the gap: The ____ accounts for 99.86% of the Solar System's total mass.",
+        "text": "Which object contains more than 99% of the mass in our solar system?",
         "options": [
-          "Sun",
+          "The Sun",
+          "Jupiter",
           "Earth",
-          "Milky Way Galaxy",
-          "Mercury"
+          "Neptune"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "The Sun accounts for 99.86% of the Solar System's total mass.",
+        "fact": "The Sun contains approximately 99.86% of the total mass of our solar system.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -89,22 +89,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "The Sun accounts for 99.86% of the Solar System's total mass."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-3",
-        "text": "Fill the gap: NASA describes the solar system as including the ____ and its planetary system.",
+        "text": "Which star lies at the centre of our solar system?",
         "options": [
-          "Sun",
-          "Solar System",
-          "Earth",
-          "Milky Way Galaxy"
+          "The Sun",
+          "Sirius",
+          "Polaris",
+          "Proxima Centauri"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "NASA describes the solar system as including the Sun and its planetary system.",
+        "fact": "Our solar system is centred on the Sun, the star that the planets orbit.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -112,22 +112,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "NASA describes the solar system as including the Sun and its planetary system."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-4",
-        "text": "Fill the gap: Astronomers sometimes divide the ____ structure into separate regions.",
+        "text": "What is the name of the planetary system that contains Earth?",
         "options": [
-          "Solar System",
-          "Sun",
-          "Earth",
-          "Milky Way Galaxy"
+          "The Solar System",
+          "The Andromeda Galaxy",
+          "The Orion Nebula",
+          "The Alpha Centauri system"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "Astronomers sometimes divide the Solar System structure into separate regions.",
+        "fact": "Earth belongs to the Solar System, which includes the Sun and the objects orbiting it.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -135,22 +135,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "Astronomers sometimes divide the Solar System structure into separate regions."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-5",
-        "text": "Fill the gap: ____ and Saturn possess nearly 90% of the non-stellar mass of the Solar System.",
+        "text": "Which planet, together with Saturn, holds most of the solar system’s mass outside the Sun?",
         "options": [
           "Jupiter",
-          "Sun",
           "Earth",
-          "Milky Way Galaxy"
+          "Mars",
+          "Mercury"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "Jupiter and Saturn possess nearly 90% of the non-stellar mass of the Solar System.",
+        "fact": "Jupiter and Saturn together hold nearly 90% of the mass outside the Sun.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -158,22 +158,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "Jupiter and Saturn possess nearly 90% of the non-stellar mass of the Solar System."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-6",
-        "text": "Fill the gap: The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and ____.",
+        "text": "Which gas giant, like Jupiter, is made mainly of hydrogen and helium?",
         "options": [
           "Saturn",
-          "Solar System",
           "Earth",
-          "Milky Way Galaxy"
+          "Mars",
+          "Mercury"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and Saturn.",
+        "fact": "Jupiter and Saturn are gas giants composed mainly of hydrogen and helium.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -181,22 +181,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "The Sun is composed of roughly 98% hydrogen and helium, as are Jupiter and Saturn."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-7",
-        "text": "Fill the gap: The closest star to the Solar System, ____, is 269,000 AU (4.25 ly) away.",
+        "text": "Beyond the Sun, which star is closest to us?",
         "options": [
           "Proxima Centauri",
-          "Sun",
-          "Earth",
-          "Milky Way Galaxy"
+          "Sirius",
+          "Vega",
+          "Betelgeuse"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "The closest star to the Solar System, Proxima Centauri, is 269,000 AU (4.25 ly) away.",
+        "fact": "Proxima Centauri is our nearest stellar neighbour, about 4.25 light-years away.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -204,22 +204,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "The closest star to the Solar System, Proxima Centauri, is 269,000 AU (4.25 ly) away."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-8",
-        "text": "Fill the gap: The Solar System currently moves through a cloud of interstellar medium called the ____.",
+        "text": "Which cloud of interstellar gas surrounds our solar system?",
         "options": [
-          "Local Cloud",
-          "Sun",
-          "Earth",
-          "Milky Way Galaxy"
+          "The Local Interstellar Cloud",
+          "The Orion Nebula",
+          "The Eagle Nebula",
+          "The Crab Nebula"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "The Solar System currently moves through a cloud of interstellar medium called the Local Cloud.",
+        "fact": "Our solar system is in a region of interstellar gas called the Local Interstellar Cloud, also called the Local Cloud.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -227,22 +227,22 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "The Solar System currently moves through a cloud of interstellar medium called the Local Cloud."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       },
       {
         "id": "generated-84acbbc1-5cd5-453f-88d7-3f8d2c7fd97c-9",
-        "text": "Fill the gap: The ____ includes the Sun and all objects that are bound to it by gravity and orbit it.",
+        "text": "What force holds the solar system together?",
         "options": [
-          "Solar System",
-          "Earth",
-          "Milky Way Galaxy",
-          "Mercury"
+          "Gravity",
+          "Magnetism",
+          "Sound",
+          "Electric current"
         ],
         "correct": [
           0
         ],
         "type": "single",
-        "fact": "The Solar System includes the Sun and all objects that are bound to it by gravity and orbit it.",
+        "fact": "Gravity binds the Sun and the objects that orbit it into the solar system.",
         "image": null,
         "clue": "",
         "difficulty": "easy",
@@ -250,12 +250,13 @@
           "url": "https://en.wikipedia.org/wiki/Solar_System",
           "quote": "The Solar System includes the Sun and all objects that are bound to it by gravity and orbit it."
         },
-        "generationMethod": "reference-clue"
+        "generationMethod": "model"
       }
     ],
     "category": "Community Quizzes",
     "description": "Solar System · easy · AI assisted, owner reviewed",
     "source": "https://en.wikipedia.org/wiki/Solar_System"
   },
-  "completedAt": "2026-10-22T16:27:54.317Z"
+  "completedAt": "2026-10-22T16:27:54.317Z",
+  "publishedAt": "2026-10-22T16:31:55.983Z"
 }
