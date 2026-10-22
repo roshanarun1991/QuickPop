@@ -1,3 +1,4 @@
+import {PACKS} from './quiz-bank.js';
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
@@ -11,7 +12,7 @@ try{
   await ctx.addInitScript(()=>{window.QUICKPOP_STATIC=true;});
   const page=await ctx.newPage(),errors=[],apiRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.url().includes('/api/'))apiRequests.push(r.url());});
   const response=await page.goto(base);assert(response.ok());await page.locator('.pack').first().waitFor();await page.evaluate(()=>document.fonts.ready);
-  assert.equal(await page.locator('.pack').count(),20);assert(await page.getByRole('link',{name:'JOIN A QUIZ'}).isVisible());assert(await page.locator('#quick-join').isVisible());assert(await page.locator('.live-note').isVisible());pass(`${width}px published home keeps joining visible`);
+  assert.equal(await page.locator('.pack').count(),PACKS.length);assert(await page.getByRole('link',{name:'JOIN A QUIZ'}).isVisible());assert(await page.locator('#quick-join').isVisible());assert(await page.locator('.live-note').isVisible());pass(`${width}px published home keeps joining visible`);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));pass(`${width}px homepage fits`);
   await page.screenshot({path:`test-results/published-home-${width}.png`,fullPage:true});
   await page.goto(base+'#host/friends');await page.locator('#count').waitFor();assert.equal(await page.locator('#teams').count(),0);

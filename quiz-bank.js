@@ -1,4 +1,7 @@
 import {EXTRA} from './extra-questions.js';
+import {HARD} from './hard-questions.js';
+import {TOPIC_PACKS} from './topic-packs.js';
+import generated from './generated-packs.json' with {type:'json'};
 // Original wording. Stable, general-audience facts; descriptive topic names, no franchise artwork.
 const p = (id,title,category,icon,color,description,rows,source) => ({
   id,title,category,icon,color,description,source,difficulty:'Mixed',questions:rows.map((r,i)=>({
@@ -172,6 +175,14 @@ for(const pack of PACKS){
  const rows=EXTRA[pack.id];
  if(!rows||rows.length!==4)throw Error('Every pack needs four additional questions.');
  for(const [i,[text,answer,b,c,d,fact]] of rows.entries())pack.questions.push({id:pack.id+'-'+(i+6),text,options:[answer,b,c,d],correct:[0],fact,type:'single',image:null});
+}
+for(const pack of PACKS){for(const q of pack.questions)q.difficulty='easy';pack.questions.push(...HARD[pack.id]);pack.difficulty='Easy + Hard';}
+PACKS.push(...TOPIC_PACKS,...generated);
+export const difficultyModes=pack=>[...new Set(pack.questions.map(q=>q.difficulty||pack.difficulty||'easy'))].filter(x=>['easy','hard'].includes(x));
+export function chooseDifficulty(pack,level='easy'){
+ const questions=pack.questions.filter(q=>(q.difficulty||pack.difficulty||'easy')===level);
+ if(!questions.length)throw Error(`This quiz has no ${level} questions yet. Choose another difficulty.`);
+ return {...pack,difficulty:level,questions};
 }
 // Deterministically vary answer positions for solo play. Live rooms shuffle again.
 for(const pack of PACKS)for(const [i,q] of pack.questions.entries()){

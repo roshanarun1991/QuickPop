@@ -1,3 +1,4 @@
+import {PACKS} from './quiz-bank.js';
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 const browser=await chromium.launch({headless:true});
@@ -16,7 +17,7 @@ try{
  await page.reload();await page.locator('.pack').first().waitFor();
  await offline.setOffline(true);await page.reload();
  await page.locator('.pack').first().waitFor();
- assert.equal(await page.locator('.pack').count(),20);
+ assert.equal(await page.locator('.pack').count(),PACKS.length);
  await page.goto(base+'#practice/friends');await page.locator('[data-answer]').first().click();
  assert(await page.locator('[data-action="solo-next"]').isVisible());
  console.log('PASS cached homepage and solo practice work offline');

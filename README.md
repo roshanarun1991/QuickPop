@@ -4,7 +4,7 @@ A party-ready quiz for colleagues, friends and family. No accounts; join with a 
 
 ## What works
 
-20 original quiz packs / 200 questions; live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
+26 original quiz packs / 520 questions (plus owner-approved generated packs); live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
 
 See [DESIGN_REVIEW.md](DESIGN_REVIEW.md) for the review and deliberately deferred features, and [QA.md](QA.md) for checks and deployment acceptance.
 
@@ -14,13 +14,13 @@ The site at https://roshanarun1991.github.io/QuickPop/ is built and published by
 
 ## Runs without your computer
 
-The entire site, room registry and multiplayer game server run on **Cloudflare Workers + SQLite Durable Objects**. Closing your computer does not stop it. GitHub stores the source and runs automated QA. There are no Google, AI or paid content APIs.
+The published solo website runs on **GitHub Pages**. Quiz generation runs on GitHub Actions using an open-source model on the runner. Neither needs your computer. Multiplayer is prepared for **Cloudflare Workers + SQLite Durable Objects**, but Cloudflare connection and deployment are still pending. No paid AI API key is required.
 
 The website has not been deployed until `wrangler deploy` succeeds and the live checks below pass. A GitHub source repository alone does not host the live rooms.
 
 ## Local development
 
-Requires Node 22+ (Node LTS recommended).
+Requires Node 24+ (Node LTS recommended).
 
 ```sh
 npm ci
@@ -83,3 +83,13 @@ The private builder saves drafts on-device. Export JSON as a backup or to transf
 - Local 200-player QA is not a guarantee of 1,000 simultaneous rooms or performance on every corporate network.
 
 Font licenses are included in the built assets. Runtime dependencies and tooling are recorded in `package-lock.json`.
+
+## Topics, difficulty and admin
+
+Food illustrations, logo marks and flag diagrams are bundled locally, with optional text clues. Artists use album and career clues. Capitals, currencies and science join the existing pop-culture packs. Each curated pack has ten Easy and ten Hard questions; selecting difficulty changes the bank used in both solo and live games. Search supports topic aliases and keyboard suggestions. Unknown searches show Coming soon. See [MEDIA_CREDITS.md](MEDIA_CREDITS.md).
+
+Open `#admin` using the owner-provided passcode. Enter a topic and difficulty, prepare a request, then confirm the prepared issue while signed into GitHub as the repository owner. The free model may take several minutes (up to the 25-minute job limit). Return to Admin and check for the ten-question draft. Review every answer and explanation, tick the review box, then confirm publication on GitHub. QA must pass before Pages deploys.
+
+The client passcode is a convenience gate, not secure server authentication. GitHub owner checks authorize jobs; no GitHub credential is stored in the website. Topics, requests and drafts are public. Avoid confidential workplace information. AI output can contain factual errors: schema checks cannot establish truth. Builder edits are private and do not replace the public draft; use a new request if the draft is unsuitable. There is no paid fallback. Standard GitHub-hosted jobs in this public repository are used; availability and GitHub usage policies still apply.
+
+The agent uses `qwen2.5:3b` through Ollama. It does not use the retired GitHub Models API. Agent publication calls the reusable QA workflow explicitly because pushes made using GITHUB_TOKEN do not trigger ordinary push workflows.

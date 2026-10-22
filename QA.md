@@ -93,3 +93,11 @@ Join a Quiz and hosting setup remain visible before server connection. The stati
 Team selection is hidden in both joining and hosting. New rooms use individual scoring; tests assert that neither team control is rendered.
 
 Solo and Daily Pop answer controls sit in a fixed bottom bar with safe-area padding. Every answer in the static suite verifies that Next question (including See my result) is visible and unobscured without scrolling at 1440×900, 1366×640, 390×667, 320×568 and 844×390. Multi-answer Lock in uses the same bar. The question page reserves space so explanations remain scrollable above it.
+
+## Topic and agent release — 22 October 2026
+
+Local acceptance: 19 engine tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 200 players, four resilience checks, and 17 new-feature checks.
+
+New-feature coverage: 26 curated packs with ten easy and ten hard questions each; valid bundled illustrations, flags and marks; keyboard suggestions and Coming soon; phone/desktop picture rendering; fixed Next control; invalid password rejection; prepared GitHub request; mocked ten-question draft preview; review checkbox required before preparing publication; invalid request and generated-output rejection. CI uses a test-only WebCrypto result to unlock Admin after testing incorrect-password rejection, without committing the owner's passcode. The real passcode is checked separately. AI factual accuracy requires review and is not certified by schema tests.
+
+Release acceptance: GitHub QA and Pages deployment green; public site loads new topics; run an owner generation request on GitHub, review its ten answers, then test approved publication and deployed catalogue. Cloudflare production multiplayer remains deferred.

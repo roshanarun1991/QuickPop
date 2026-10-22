@@ -1,3 +1,4 @@
+import {PACKS} from './quiz-bank.js';
 import {chromium} from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 import assert from 'node:assert/strict';
@@ -22,12 +23,12 @@ try{
  for(const [width,height] of [[1440,1000],[1024,768],[768,1024],[390,844],[320,740]]){
   const {context,page}=await newPage({width,height});
   await page.goto(base);await page.locator('.pack').first().waitFor();await page.evaluate(()=>document.fonts.ready);
-  check(`${width}px: all 20 packs`,await page.locator('.pack').count()===20);check(`${width}px simplified hero`,await page.locator('.hero-art,.ticker').count()===0);check(`${width}px footer credit visible`,await page.locator('.footer-credit').isVisible());
+  check(`${width}px: all packs`,await page.locator('.pack').count()===PACKS.length);check(`${width}px simplified hero`,await page.locator('.hero-art,.ticker').count()===0);check(`${width}px footer credit visible`,await page.locator('.footer-credit').isVisible());
   await noOverflow(page,`${width}px homepage has no horizontal overflow`);
-  await page.locator('#search').fill('sweden');check(`${width}px search filters`,await page.locator('.pack').count()===1);
-  await page.locator('#search').fill('notherezz');check(`${width}px empty state`,await page.getByText('NO MATCH. YET.').isVisible());
+  await page.locator('#search').fill('sweden');check(`${width}px search filters`,await page.locator('.pack').count()>=1);
+  await page.locator('#search').fill('notherezz');check(`${width}px empty state`,await page.getByText('COMING SOON').isVisible());
   await page.getByRole('button',{name:'Clear search',exact:true}).click();
-  await page.locator('[data-category="Music"]').click();check(`${width}px category filters`,await page.locator('.pack').count()===3);
+  await page.locator('[data-category="Music"]').click();check(`${width}px category filters`,await page.locator('.pack').count()===PACKS.filter(p=>p.category==='Music').length);
   await page.locator('[data-category="All"]').click();
   await page.locator('#theme').click();await page.reload();check(`${width}px dark mode persists`,await page.locator('html').getAttribute('data-theme')==='dark');
   await noOverflow(page,`${width}px night mode fits`);

@@ -1,3 +1,4 @@
+import {MEDIA} from './visual-media.js';
 export const MAX_PLAYERS = 200;
 export const IDLE_MS = 2 * 60 * 60 * 1000;
 export const FINISH_MS = 10 * 60 * 1000;
@@ -22,12 +23,13 @@ export function validateQuiz(value) {
     if(!Array.isArray(q.options)||q.options.length<2||q.options.length>4||q.options.some(x=>typeof x!=='string'||!x.trim()||x.length>100)) throw Error(`Question ${i+1} needs 2–4 short answers.`);
     if(new Set(q.options.map(x=>x.trim().toLowerCase())).size!==q.options.length) throw Error(`Question ${i+1} has duplicate answers.`);
     if(!Array.isArray(q.correct)||!q.correct.length||q.correct.some(n=>!Number.isInteger(n)||n<0||n>=q.options.length)||new Set(q.correct).size!==q.correct.length) throw Error(`Mark the correct answer(s) for question ${i+1}.`);
-    return {id:String(i),text:q.text.trim(),options:q.options.map(x=>x.trim()),correct:[...q.correct],type:q.correct.length>1?'multi':q.options.length===2?'boolean':'single',fact:String(q.fact||'').slice(0,280),image:['flag-sweden'].includes(q.image)?q.image:null};
+    return {id:String(q.id||i).slice(0,100),text:q.text.trim(),options:q.options.map(x=>x.trim()),correct:[...q.correct],type:q.correct.length>1?'multi':q.options.length===2?'boolean':'single',fact:String(q.fact||'').slice(0,280),image:Object.hasOwn(MEDIA,q.image)?q.image:null,clue:String(q.clue||'').slice(0,300),difficulty:['easy','hard'].includes(q.difficulty)?q.difficulty:value.difficulty==='hard'?'hard':'easy'};
   });
-  return {id:String(value.id||'custom').slice(0,64),title:value.title.trim(),icon:'✎',color:'pink',questions};
+  return {id:String(value.id||'custom').slice(0,64),title:value.title.trim(),icon:'✎',color:'pink',difficulty:value.difficulty==='hard'?'hard':'easy',questions};
 }
 export function createRoom(pin,pack,settings={},now=Date.now()) {
   const quiz=validateQuiz(pack);
+  if(settings.difficulty){if(!['easy','hard'].includes(settings.difficulty))throw Error('Choose easy or hard.');quiz.questions=quiz.questions.filter(q=>q.difficulty===settings.difficulty);if(!quiz.questions.length)throw Error('No questions at that difficulty.');}
   const count=Math.max(3,Math.min(quiz.questions.length,Number(settings.count)||quiz.questions.length));
   const seconds=[10,15,20,30].includes(Number(settings.seconds))?Number(settings.seconds):15;
   return {pin,id:crypto.randomUUID(),hostToken:token(),title:quiz.title,packId:quiz.id,
@@ -98,7 +100,7 @@ export function view(room,authToken,now=Date.now()) {
   if(!host&&!p) throw Error('Your room session has expired. Join again.');
   const revealAnswer=['reveal','finished'].includes(room.phase),q=room.questions[room.index];
   const board=ranking(room).map((row,i)=>({id:row.id,name:row.name,avatar:row.avatar,team:row.team,score:row.score,rank:i+1,change:row.previousRank?row.previousRank-i-1:0,points:revealAnswer?row.last?.points||0:0,wins:row.wins,correctCount:row.correctCount,bestStreak:row.bestStreak}));
-  const question=q?{text:q.text,options:q.options,type:q.type,image:q.image,...(revealAnswer?{correct:q.correct,fact:q.fact}:{})}:null;
+  const question=q?{text:q.text,options:q.options,type:q.type,image:q.image,clue:q.clue,...(revealAnswer?{correct:q.correct,fact:q.fact}:{})}:null;
   return {pin:room.pin,roomId:room.id,title:room.title,packId:room.packId,phase:room.phase,index:room.index,total:room.questions.length,round:room.round,
     settings:room.settings,serverNow:now,startAt:room.startAt,deadline:room.deadline,nextAt:room.nextAt,expiresAt:room.expiresAt,host,board,question,
     answered:room.players.filter(p=>p.answer).length,self:p?{id:p.id,locked:!!p.answer,choices:p.answer?.choices||[],streak:p.streak,last:revealAnswer?p.last:null}:null,
