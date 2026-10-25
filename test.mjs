@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PACKS,dailyPack} from './quiz-bank.js';
+import {PACKS,dailyPack,chooseDifficulty} from './quiz-bank.js';
 import {createRoom,joinRoom,startQuestion,answerQuestion,reveal,scoreAnswer,ranking,rematch,view,validateQuiz,cleanName,MAX_PLAYERS} from './engine.js';
 const now=100000;
 function setup(settings={}){const room=createRoom('0123',PACKS[0],{shuffle:false,...settings},now);const player=joinRoom(room,{name:'Fika Fox',avatar:1},now);return {room,player};}
@@ -10,6 +10,45 @@ test('All topic packs have valid unique question records',()=>{
  assert(ids.size>=520);assert(new Set(PACKS.flatMap(p=>p.questions.map(q=>q.correct[0]))).size===4);
 });
 test('Daily Pop deterministic, five distinct questions, date changes',()=>{const a=dailyPack('2026-10-20'),b=dailyPack('2026-10-20');assert.deepEqual(a,b);assert.equal(new Set(a.questions.map(q=>q.id)).size,5);assert.notDeepEqual(a.questions,dailyPack('2026-10-21').questions);});
+
+test('Question content is unique despite punctuation, case and spacing differences',()=>{
+ const normalize=s=>s.normalize('NFKD').toLowerCase().replace(/[^a-z0-9]/g,'');
+ for(const pack of PACKS){const seen=new Set();for(const q of pack.questions){
+  const key=normalize(q.text)+'|'+(q.image||'');
+  assert(!seen.has(key),`Repeated content in ${pack.id}: ${q.text}`);seen.add(key);
+ }}
+});
+
+test('Previously repeated facts occur only once within their topic',()=>{
+ // Match the tested fact across paraphrases, including reverse questions.
+ // Only the prompt and correct answers count: distractors may reuse a name.
+ const subjects={
+  friends:[/ursula/i,/marcel/i],abba:[/final countdown/i],nineties:[/jagged little pill/i],
+  eurovision:[/c[eé]line dion/i],sweden:[/pippi longstocking/i],
+  food:[/risotto/i,/tahini/i,/pesto/i,/saffron/i,/kimchi/i],
+  diwali:[/lakshmi.*prosperity|prosperity.*lakshmi/i,/rangoli/i,/\bdiya\b.*small|small.*\bdiya\b/i],
+  holi:[/\bgulal\b/i,/\bgujiya\b/i,/young devotee|figure.*devotion/i],
+  midsommar:[/små grodorna/i,/herring/i,/strawberr/i],
+  halloween:[/who wrote.*frankenstein/i],retro:[/company.*sonic/i]
+ };
+ for(const [id,patterns] of Object.entries(subjects)){
+  const pack=PACKS.find(p=>p.id===id);
+  for(const pattern of patterns){const matches=pack.questions.filter(q=>pattern.test([q.text,...q.correct.map(i=>q.options[i])].join(' ')));
+   assert.equal(matches.length,1,`${id} repeats or loses the reviewed fact ${pattern}: ${matches.map(q=>q.text).join('; ')}`);
+  }
+ }
+});
+
+test('Food difficulty levels and picture rounds have separate answer subjects',()=>{
+ for(const id of ['food','guess-food','guess-logo','guess-flag']){
+  const pack=PACKS.find(p=>p.id===id),easy=chooseDifficulty(pack,'easy'),hard=chooseDifficulty(pack,'hard');
+  assert.equal(easy.questions.length,10);assert.equal(hard.questions.length,10);
+  const answers=new Set(easy.questions.flatMap(q=>q.correct.map(i=>q.options[i].toLowerCase())));
+  for(const q of hard.questions){for(const i of q.correct)assert(!answers.has(q.options[i].toLowerCase()),`${id} reuses ${q.options[i]} across difficulty levels`);
+   if(q.image)assert(!easy.questions.some(e=>e.image===q.image),`${id} reuses a picture`);
+  }
+ }
+});
 
 test('Every pack supports complete six- and ten-question games without repetition',()=>{
  for(const pack of PACKS)for(const count of [6,10]){

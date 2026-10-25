@@ -2,13 +2,13 @@
 const rows={
 friends:`What is Chandler's middle name?|Muriel|Francis|Joseph|Charles
 What is the name of Joey's stuffed penguin?|Hugsy|Waddles|Pingu|Snowball
-Which character has a twin named Ursula?|Phoebe|Rachel|Monica|Janice
+Who officiates at Monica and Chandler's wedding?|Joey|Ross|Gunther|Richard
 What is the name of Ross's first wife?|Carol|Susan|Emily|Julie
 What is the name of Rachel's daughter?|Emma|Ella|Erica|Emily
 Who plays Phoebe Buffay?|Lisa Kudrow|Courteney Cox|Jennifer Aniston|Maggie Wheeler
 What is the surname of Monica's boyfriend Richard?|Burke|Green|Geller|Stevens
 Which character moves to Yemen to avoid Janice?|Chandler|Joey|Ross|Gunther
-What is the name of Ross's pet monkey?|Marcel|Maurice|Milo|Max
+Which actor plays Gunther?|James Michael Tyler|Paul Rudd|Hank Azaria|Tom Selleck
 What is Joey's soap-opera character's surname?|Ramoray|Romano|Reynolds|Rossini`,
 thrones:`What is the ancestral seat of House Tyrell?|Highgarden|Riverrun|Sunspear|The Eyrie
 What is Arya's sword called?|Needle|Ice|Oathkeeper|Longclaw
@@ -59,9 +59,9 @@ Which Swedish singer released Dancing on My Own in 2010?|Robyn|Tove Lo|Lykke Li|
 Which ABBA member was born in Norway?|Anni-Frid|Agnetha|Benny|Björn
 What is the surname of ABBA member Agnetha?|Fältskog|Lyngstad|Ulvaeus|Andersson
 Which album contains ABBA's One of Us?|The Visitors|Arrival|Waterloo|Ring Ring
-Which Swedish band released The Final Countdown?|Europe|Roxette|Kent|The Cardigans`,
+Which Swedish band released Lovefool in 1996?|The Cardigans|Roxette|Kent|Europe`,
 nineties:`Which band released the 1995 album Different Class?|Pulp|Radiohead|Blur|Oasis
-Who released the album Jagged Little Pill?|Alanis Morissette|Sheryl Crow|Björk|Tori Amos
+Which band released the 1998 album Mezzanine?|Massive Attack|Portishead|Air|Garbage
 Which group released the album Dummy?|Portishead|Massive Attack|Air|Tricky
 Who sang Torn on the hit 1997 recording?|Natalie Imbruglia|Natalie Merchant|Lisa Loeb|Sheryl Crow
 Which band released Parklife?|Blur|Oasis|Suede|Pulp
@@ -71,7 +71,7 @@ Which band released the album Ten?|Pearl Jam|Nirvana|Soundgarden|Alice in Chains
 Which artist released the 1997 album Homogenic?|Björk|PJ Harvey|Tori Amos|Kate Bush
 Which band recorded Common People?|Pulp|Blur|Oasis|The Verve`,
 eurovision:`Which country won Eurovision in 1969 with Lenny Kuhr?|Netherlands|Belgium|Germany|Denmark
-Who won Eurovision in 1988 for Switzerland?|Céline Dion|Lara Fabian|Patricia Kaas|France Gall
+Who won Eurovision for Portugal in 2017?|Salvador Sobral|Duncan Laurence|Conchita Wurst|Netta
 Which country won Eurovision in 2004 with Ruslana?|Ukraine|Poland|Moldova|Latvia
 What was Alexander Rybak's 2009 winning song?|Fairytale|Satellite|Heroes|Only Teardrops
 Which city hosted Eurovision 1974?|Brighton|London|Edinburgh|Birmingham
@@ -89,7 +89,7 @@ Which city is associated with the historic Falu copper mine?|Falun|Kiruna|Umeå|
 Which scientist developed the Celsius temperature scale?|Anders Celsius|Carl Linnaeus|Alfred Nobel|Svante Arrhenius
 What is the name of Sweden's highest mountain?|Kebnekaise|Sarek|Åreskutan|Helags
 Which strait does the bridge from Malmö to Copenhagen cross?|Öresund|Skagerrak|Kattegat|Great Belt
-Which author created Pippi Longstocking?|Astrid Lindgren|Selma Lagerlöf|Tove Jansson|Elsa Beskow`,
+Which Swedish province gives the Dala horse its name?|Dalarna|Skåne|Halland|Blekinge`,
 india:`Which Indian state contains the ruins of Hampi?|Karnataka|Kerala|Odisha|Assam
 Which instrument is associated with Ustad Bismillah Khan?|Shehnai|Sitar|Sarod|Tabla
 Which city is called the Pink City?|Jaipur|Jodhpur|Udaipur|Bikaner
@@ -111,45 +111,45 @@ What is the capital of Slovenia?|Ljubljana|Bratislava|Zagreb|Sarajevo
 What is the capital of Oman?|Muscat|Salalah|Manama|Doha
 What is the capital of Ethiopia?|Addis Ababa|Asmara|Nairobi|Kampala`,
 food:`Which cheese is traditionally used in a classic Greek salad?|Feta|Halloumi|Manchego|Pecorino
-Which spice comes from the dried stigmas of Crocus sativus?|Saffron|Sumac|Paprika|Cardamom
+What primarily makes choux pastry puff up in the oven?|Steam|Yeast fermentation|Whipped egg whites|Baking powder
 Which fermented soybean paste is used in Japanese soup?|Miso|Tahini|Gochujang|Harissa
-Which grain is traditionally used to make risotto?|Rice|Barley|Millet|Bulgur
-What is the main ingredient in tahini?|Sesame seeds|Chickpeas|Almonds|Sunflower seeds
+Which two ingredients form a traditional roux?|Flour and fat|Egg yolks and oil|Sugar and water|Cream and chocolate
+What does the culinary term julienne describe?|Cutting into thin matchsticks|Cooking in a sealed bag|Folding in whipped cream|Reducing a stock
 Which French sauce is made from butter and egg yolks with lemon?|Hollandaise|Béchamel|Velouté|Espagnole
-Which ingredient gives traditional pesto its green colour?|Basil|Parsley|Mint|Spinach
+Which mixture is the basis of a traditional chocolate ganache?|Chocolate and cream|Cocoa powder and water|Butter and icing sugar|Egg whites and sugar
 Which fruit is dried to make a prune?|Plum|Apricot|Peach|Fig
 Which acid is characteristic of citrus fruits?|Citric acid|Lactic acid|Acetic acid|Tartaric acid
-What is the name of the Korean fermented cabbage dish?|Kimchi|Bulgogi|Bibimbap|Tteokbokki`,
-diwali:`Which Sanskrit word is associated with a row of lamps?|Deepavali|Namaste|Prasad|Mandala
-Which goddess is commonly worshipped for prosperity during Diwali?|Lakshmi|Saraswati|Durga|Parvati
+What is used around a dish when cooking it in a bain-marie?|A water bath|A bed of dry salt|An ice bath|A layer of hot sand`,
+diwali:`Which festival commonly opens the five-day Diwali celebrations?|Dhanteras|Janmashtami|Navaratri|Makar Sankranti
+Which goddess is central to the major Bengali puja held on Diwali's new moon?|Kali|Saraswati|Sita|Radha
 Which festival day commonly honours the bond between brothers and sisters after Diwali?|Bhai Dooj|Holi|Raksha Bandhan|Janmashtami
 In Jain tradition, Diwali commemorates the nirvana of whom?|Mahavira|Rishabhanatha|Parshvanatha|Neminatha
 Which Sikh observance often coincides with Diwali?|Bandi Chhor Divas|Vaisakhi|Hola Mohalla|Gurpurab of Guru Nanak
 Which city is traditionally associated with Rama's homecoming?|Ayodhya|Mathura|Varanasi|Ujjain
-What is a small traditional clay oil lamp called?|Diya|Dhol|Lota|Thali
-What are colourful decorative floor designs often called?|Rangoli|Mehndi|Bandhani|Chikankari
+Which Sikh Guru is associated with Bandi Chhor Divas?|Guru Hargobind|Guru Nanak|Guru Angad|Guru Amar Das
+Govardhan Puja recalls Krishna lifting what to shelter villagers?|A hill|A temple|A tree|A chariot
 Which lunar month contains Diwali in many Hindu calendars?|Kartika|Chaitra|Shravana|Phalguna
 Which deity is commonly worshipped alongside Lakshmi during Diwali?|Ganesha|Hanuman|Kartikeya|Brahma`,
-holi:`Which bonfire ritual takes place on the evening before the main colour celebration?|Holika Dahan|Aarti of the Ganges|Dahi Handi|Govardhan Puja
+holi:`What is thrown during Phoolon Wali Holi in Vrindavan?|Flower petals|Rice grains|Paper confetti|Sand
 Which Hindu month is associated with Holi?|Phalguna|Kartika|Shravana|Ashadha
-Which figure is celebrated for devotion in the Holika story?|Prahlada|Arjuna|Bhishma|Karna
+What was the name of Prahlada's father in the Holika story?|Hiranyakashipu|Dasharatha|Vasudeva|Pandu
 Which pair of places is famous for Lathmar Holi?|Barsana and Nandgaon|Jaipur and Ajmer|Patna and Gaya|Kochi and Thrissur
-What is the coloured powder commonly used at Holi called?|Gulal|Kajal|Chandan oil|Henna paste
+Which martial festival is celebrated by Sikhs around the time of Holi?|Hola Mohalla|Baisakhi|Lohri|Maghi
 Which drink is often flavoured with nuts and spices during Holi?|Thandai|Rasam|Kahwa|Kokum sherbet
-Which stuffed sweet is associated with Holi in northern India?|Gujiya|Idli|Dhokla|Appam
+Which Indian state celebrates the spring festival Yaoshang around Holi?|Manipur|Goa|Gujarat|Kerala
 Which Bengali spring celebration is associated with Shantiniketan?|Basanta Utsav|Bihu|Onam|Lohri
 What does the Hindi word rang mean in the Holi context?|Colour|Fire|Water|Music
-Which region is especially associated with Krishna's Holi traditions?|Braj|Konkan|Malabar|Marwar`,
-midsommar:`What is the Swedish word for the decorated Midsummer pole?|Midsommarstång|Julbock|Dalahäst|Lussekatt
-What does Små grodorna mean in English?|The little frogs|The small flowers|The happy birds|The young trees
-Which pickled food often appears at a Swedish Midsummer meal?|Herring|Sardines in tomato|Octopus|Eel pie
-What does jordgubbar mean?|Strawberries|Blueberries|Raspberries|Gooseberries
+Which lunar phase is associated with the night of Holika Dahan?|Full moon|New moon|First quarter|Last quarter`,
+midsommar:`On which weekday is Swedish Midsummer Eve celebrated today?|Friday|Thursday|Saturday|Sunday
+In one Swedish Midsummer tradition, how many kinds of flowers are placed under a pillow?|Seven|Three|Twelve|Twenty
+Which spirit, often flavoured with caraway or dill, may be served as Midsummer snaps?|Aquavit|Calvados|Grappa|Tequila
+The traditional date of Midsummer Day, 24 June, is linked to the feast of which saint?|John the Baptist|Patrick|Nicholas|George
 Which flower is known as prästkrage in Swedish?|Oxeye daisy|Rose|Tulip|Sunflower
 Which herb commonly accompanies new potatoes at Midsummer?|Dill|Rosemary|Sage|Coriander
 What is a Swedish snapsvisa?|A drinking song|A flower crown|A potato dish|A folk costume
 Which event is Midsummer season close to in the northern hemisphere?|Summer solstice|Winter solstice|Spring equinox|Autumn equinox
-What does färskpotatis mean?|New potatoes|Sweet potatoes|Mashed potatoes|Potato pancakes
-What does blomsterkrans mean?|Flower wreath|Wooden pole|Summer dress|Straw hat`,
+Which line of latitude marks the approximate southern limit of the midnight sun at the June solstice?|Arctic Circle|Tropic of Cancer|Equator|Tropic of Capricorn
+What are the flowers under a Midsummer pillow traditionally said to help you dream about?|A future spouse|A buried treasure|Next year's weather|A distant journey`,
 christmas:`Which country is associated with the Christmas sweet bread panettone?|Italy|Spain|Portugal|Austria
 What is the name of the ballet featuring the Sugar Plum Fairy?|The Nutcracker|Swan Lake|Giselle|Coppélia
 Who composed the ballet The Nutcracker?|Pyotr Ilyich Tchaikovsky|Igor Stravinsky|Sergei Prokofiev|Johann Strauss II
@@ -160,7 +160,7 @@ Which saint is associated with the origins of Santa Claus?|Saint Nicholas|Saint 
 Which spice is traditionally pushed into oranges to make fragrant pomanders?|Cloves|Cumin|Fennel|Mustard seeds
 In The Twelve Days of Christmas, what is given on the fifth day?|Gold rings|Calling birds|French hens|Swans
 Which Swedish saffron bun is associated with Saint Lucia's Day?|Lussekatt|Semla|Kanelbulle|Chokladboll`,
-halloween:`Who wrote Frankenstein?|Mary Shelley|Bram Stoker|H. G. Wells|Edgar Allan Poe
+halloween:`Who wrote the novella The Turn of the Screw?|Henry James|Bram Stoker|Mary Shelley|H. G. Wells
 Who wrote The Legend of Sleepy Hollow?|Washington Irving|Bram Stoker|Mary Shelley|Edgar Allan Poe
 What is the name of the scientist in Frankenstein?|Victor Frankenstein|Henry Jekyll|Abraham Van Helsing|Dorian Gray
 Which ancient Celtic festival is associated with Halloween's history?|Samhain|Beltane|Imbolc|Lughnasadh
@@ -170,7 +170,7 @@ What date is All Saints' Day in the Western Christian calendar?|1 November|31 Oc
 Which vegetable was traditionally carved into lanterns in Ireland before pumpkins became common?|Turnip|Carrot|Beetroot|Parsnip
 Who wrote The Raven?|Edgar Allan Poe|Walt Whitman|Robert Frost|William Blake
 Which novel features the character Jonathan Harker?|Dracula|Frankenstein|The Picture of Dorian Gray|The Invisible Man`,
-retro:`Which company created the original Sonic the Hedgehog game?|Sega|Nintendo|Atari|Namco
+retro:`Which classic arcade game features the spaceship called the Vic Viper?|Gradius|Galaga|Asteroids|Defender
 Which arcade game introduced Mario under the name Jumpman?|Donkey Kong|Mario Bros.|Pac-Man|Space Invaders
 Where was Alexey Pajitnov working when he created Tetris?|Soviet Academy of Sciences|Nintendo|Sega|Atari Games
 What is the princess's name in the main Legend of Zelda series?|Zelda|Peach|Daisy|Rosalina

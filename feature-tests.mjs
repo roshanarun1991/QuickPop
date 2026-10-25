@@ -25,6 +25,29 @@ try{for(const width of [390,1440]){
  for(const id of ['guess-food','guess-logo','guess-flag']){
   await page.goto(base+'#host/'+id);await page.locator('#difficulty').selectOption('hard');await page.locator('#count').selectOption('10');await page.locator('[data-practice]').click();await page.locator('.quiz-picture').waitFor();assert(await page.locator('.quiz-picture').evaluate(i=>i.complete&&i.naturalWidth>0));assert((await page.locator('.eyebrow').last().innerText()).includes('HARD'));await page.locator('[data-answer]').first().click();const r=await page.locator('[data-action="solo-next"]').boundingBox();assert(r.y>=0&&r.y+r.height<=844);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:`test-results/${id}-${width}.png`});pass(`${width}px ${id} hard image round and visible Next`);
  }
+ for(const id of ['food','guess-food']){
+  const seen=new Set(),pack=PACKS.find(p=>p.id===id);
+  for(const level of ['easy','hard']){
+   await page.goto(base+'#host/'+id);await page.locator('#difficulty').selectOption(level);await page.locator('#count').selectOption('10');await page.locator('[data-practice]').click();
+   const questions=chooseDifficulty(pack,level).questions;
+   for(const [index,q] of questions.entries()){
+    assert.equal(await page.locator('.question-title').innerText(),q.text);
+    assert((await page.locator('.eyebrow').last().innerText()).includes(level.toUpperCase()));
+    const key=q.image||q.text;assert(!seen.has(key),`${id} repeats a displayed question across modes`);seen.add(key);
+    if(q.image)assert(await page.locator('.quiz-picture').evaluate(i=>i.complete&&i.naturalWidth>0));
+    for(const answer of q.correct)await page.locator(`[data-answer="${answer}"]`).click();
+    if(q.type==='multi')await page.locator('[data-action="solo-lock"]').click();
+    assert(await page.getByText('YOU KNOW YOUR STUFF.',{exact:true}).isVisible());
+    const next=page.locator('[data-action="solo-next"]');
+    assert(await next.evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),'Next must be visible and unobscured');
+    if(index===3)await page.screenshot({path:`test-results/${id}-${level}-verified-${width}.png`});
+    await next.click();
+   }
+   assert((await page.locator('.result-title .display').innerText()).includes('10 / 10'));
+   pass(`${width}px ${id} ${level}: all ten intended questions, correct scoring and visible Next`);
+  }
+  assert.equal(seen.size,20);
+ }
  await page.goto(base+'#admin');await page.locator('#admin-password').fill('wrong');await page.locator('#admin-login button').click();await page.locator('#admin-error').waitFor();assert(await page.locator('#admin-error').isVisible());
  if(!process.env.QA_ADMIN_PASSWORD){const c=JSON.parse(await readFile('admin-config.json','utf8'));await page.evaluate(hash=>{crypto.subtle.deriveBits=async()=>Uint8Array.from(hash.match(/../g),h=>parseInt(h,16)).buffer},c.hash);}await page.locator('#admin-password').fill(process.env.QA_ADMIN_PASSWORD||'qa-only-unlock');await page.locator('#admin-login button').click();await page.locator('#agent-topic').waitFor();await page.locator('#agent-topic').fill('Solar System');await page.locator('#agent-difficulty').selectOption('hard');await page.locator('#agent-form button').click();const href=await page.locator('#request-link a').getAttribute('href');const parsed=JSON.parse(new URL(href).searchParams.get('body').match(/```json\s*([\s\S]*?)```/)[1]);assert.equal(parsed.difficulty,'hard');assert.equal(parsed.topic,'Solar System');pass(`${width}px admin password and GitHub request preparation`);
  await page.route('https://raw.githubusercontent.com/**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'ready',requestId:parsed.requestId,quiz})}));await page.locator('#check-agent').click();await page.locator('#review-confirm').waitFor();assert.equal(await page.locator('.draft-questions > li').count(),10);assert(await page.locator('#publish-draft').isDisabled());await page.locator('#review-confirm').check();await page.locator('#publish-draft').click();const publishURL=new URL(await page.locator('#publish-link a').getAttribute('href'));assert(publishURL.searchParams.get('title').includes('publish'));const pub=JSON.parse(publishURL.searchParams.get('body').match(/```json\s*([\s\S]*?)```/)[1]);const reviewed=JSON.parse(gunzipSync(Buffer.from(pub.reviewed,'base64url')));assert.equal(reviewed.questions.length,10);await page.locator('.review-editor summary').click();await page.locator('[data-review-fact]').first().fill('A corrected explanation reviewed by the quiz owner.');assert(await page.locator('#publish-draft').isDisabled());await page.locator('#review-confirm').check();await page.locator('#publish-draft').click();await page.locator('#publish-link a').waitFor();await page.screenshot({path:`test-results/admin-${width}.png`});pass(`${width}px ten-question review and explicit publication`);

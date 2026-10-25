@@ -43,6 +43,22 @@ Approve the browser login yourself. `wrangler.toml` selects the owner's Cloudfla
 
 Open the printed `https://quickpop.<account-subdomain>.workers.dev` address. Host a six-question room, join from a second device, answer, reconnect, finish and rematch. See QA.md before announcing it to colleagues.
 
+### Manual setup on Windows
+
+Open PowerShell in the QuickPop folder (the folder containing `package.json` and `wrangler.toml`). Install Node.js LTS first if it is missing. Run each command in order, stopping if one fails:
+
+```powershell
+npm.cmd ci
+npx.cmd wrangler login --scopes account:read user:read workers:write workers_scripts:write
+npm.cmd run deploy
+```
+
+Sign in to your Cloudflare account and approve the login in the browser when prompted. The configured account ID is `ad24429455fe95738133b4c8302b4a6a`; if using another account, update `account_id` in `wrangler.toml` first. If Cloudflare asks for a workers.dev subdomain, choose one. Stay on Workers Free; the existing SQLite Durable Object setup supports that plan.
+
+Share the printed Workers URL with both hosts and players. That address serves the website and multiplayer together, so creating and joining rooms works there. The GitHub Pages URL remains the solo edition; deploying a Worker does not automatically connect Pages to it. Your computer can be switched off after deployment.
+
+For later updates without your computer: create a Cloudflare API token using the **Edit Cloudflare Workers** template, restricted to this account. In GitHub, open **Settings → Secrets and variables → Actions**. Add the token as a repository secret named `CLOUDFLARE_API_TOKEN`; on the Variables tab add `CLOUDFLARE_DEPLOY` with value `true`. Then run **QuickPop - test and publish** from Actions, or push a change to `main`. The existing workflow will test and deploy it. Never paste the token into source files or the website's Admin form.
+
 ## Automatic checks and future deployment
 
 The GitHub workflow runs engine tests, builds assets, runs the local Worker, tests 200 connected players and runs browser/accessibility checks on every push.

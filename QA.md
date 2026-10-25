@@ -109,3 +109,15 @@ Agent regression tests cover streamed responses, exact source attachment, reject
 The free model sometimes supplies too few valid questions. A tested source-clue fallback completes the draft by removing a name from an exact source sentence and offering four choices. It excludes choices present elsewhere in that sentence and avoids context-dependent sentence openings. This improves completion without claiming model output is inherently accurate.
 
 Eight additional mobile/desktop accessibility scans cover Admin, difficulty setup, a picture round and expanded search suggestions. Card and sound-control accessible names were corrected. Published-site checks: 40 static checks and the new-feature suite passed on the GitHub Pages URL.
+
+## Difficulty overlap correction — 25 October 2026
+
+Reviewed the curated Easy and Hard banks for repeated facts, including paraphrases and reverse questions. Replaced 28 Hard questions across Food Passport, Friends, Swedish music, 90s music, Eurovision, Sweden, Diwali, Holi, Midsummer, Halloween and retro games. Food now asks different culinary facts in each mode. Guess the Food already used distinct dishes; its complete rounds are now covered explicitly.
+
+Local acceptance: 27 engine/content/agent tests, 33 feature checks and 40 static-site checks passed. Eight complete ten-question food playthroughs at 390px and 1440px verified the rendered prompt against the selected bank, correct answers, 10/10 results, image loading, 20 distinct prompt/image identities per topic and an unobscured Next button after every answer. Static checks cover five viewports including a small phone and landscape. Mobile food reveal screenshot inspected visually.
+
+Regression coverage now normalizes punctuation/case/spacing, checks previously repeated facts across paraphrases, and requires disjoint correct-answer subjects and images between Food/Logo/Flag difficulty levels. These tests catch the identified regressions; they are not a universal semantic or factual accuracy checker. Replaying the same difficulty still uses its finite ten-question bank. Distinct questions may legitimately ask different facts about the same character or tradition.
+
+Content references used for the replacement review include [Visit Sweden's Midsummer guide](https://visitsweden.com/what-to-do/culture-history-and-art/swedish-traditions/midsummer-tradition/midsummer/), [Incredible India's Holi guide](https://www.incredibleindia.gov.in/en/festivals-and-events/holi), [Imphal and Yaoshang](https://www.incredibleindia.gov.in/en/manipur/imphal), and [Le Cordon Bleu on choux pastry](https://app.ckbk.com/reference/cuis81374c03s001ss021e001/pate-a-choux).
+
+The GitHub workflow reruns all suites before Pages publication. Cloudflare production deployment and real-device multiplayer acceptance remain pending the owner's manual connection; Windows setup and automatic future deployment steps are in README.md.
