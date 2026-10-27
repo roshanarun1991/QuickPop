@@ -1,4 +1,5 @@
 import {LOGOS} from './logo-media.js';
+import memes from './meme-media.json' with {type:'json'};
 const food=(body)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200"><rect width="320" height="200" rx="18" fill="#F3EAD5"/><ellipse cx="160" cy="122" rx="133" ry="65" fill="#fffaf0" stroke="#181810" stroke-width="3"/><g stroke="#422c24" stroke-width="3" stroke-linejoin="round">${body}</g></svg>`;
 const circle=(x,y,r,fill)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}"/>`;
 const foods=[
@@ -51,4 +52,5 @@ export const FLAGS=[
 ];
 for(const [id,name,alt,body] of FLAGS)MEDIA[`flag-${id}`]={svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">${body}</svg>`,alt,credit:'Flag diagram drawn for QuickPop; colours and symbols identify the country.'};
 for(const logo of LOGOS)MEDIA[`logo-${logo.slug}`]={svg:logo.svg.replace(/<title>.*?<\/title>/g,'').replace('<svg ','<svg fill="#181810" '),alt:'A brand symbol. Use the optional text clue for a non-visual version.',credit:'Simple Icons contributors; brand marks belong to their owners.'};
-export function mediaData(id){const m=MEDIA[id];return m?{...m,src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(m.svg)}:null;}
+Object.assign(MEDIA,memes);
+export function mediaData(id){const m=MEDIA[id];return m?{...m,src:m.src||'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(m.svg)}:null;}

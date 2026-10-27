@@ -1,7 +1,8 @@
+import {MAX_QUIZ_BYTES} from './photos.js';
 import {PACKS} from './quiz-bank.js';
 import {createRoom,joinRoom,startQuestion,answerQuestion,reveal,rematch,view,IDLE_MS} from './engine.js';
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
-async function body(request,max=35000) {
+async function body(request,max=MAX_QUIZ_BYTES+100000) {
   if(Number(request.headers.get('Content-Length'))>max) throw Error('This quiz is too large.');
   const reader=request.body?.getReader();if(!reader)throw Error('Missing request body.');
   const chunks=[];let size=0;
@@ -15,7 +16,7 @@ export default {
   async fetch(request,env) {
     const url=new URL(request.url);
     if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
-    if(url.pathname==='/api/health') return json({ok:true,service:'QuickPop',version:'1.0.0'});
+    if(url.pathname==='/api/health') return json({ok:true,service:'QuickPop',version:'2.0.0',maxPlayers:25});
     const origin=request.headers.get('Origin');
     if(origin&&origin!==url.origin) return json({error:'Please use the QuickPop website to play.'},403);
     try {

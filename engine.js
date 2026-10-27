@@ -1,5 +1,6 @@
+import {validatePhoto,MAX_QUIZ_BYTES} from './photos.js';
 import {MEDIA} from './visual-media.js';
-export const MAX_PLAYERS = 200;
+export const MAX_PLAYERS = 25;
 export const IDLE_MS = 2 * 60 * 60 * 1000;
 export const FINISH_MS = 10 * 60 * 1000;
 export const token = () => crypto.randomUUID() + crypto.randomUUID();
@@ -18,12 +19,13 @@ export function cleanName(input) {
 export function validateQuiz(value) {
   if(!value || typeof value.title!=='string' || value.title.trim().length<2 || value.title.length>60) throw Error('Give your quiz a title of 2–60 characters.');
   if(!Array.isArray(value.questions)||value.questions.length<3||value.questions.length>20) throw Error('A quiz needs 3–20 questions.');
+  if(new TextEncoder().encode(JSON.stringify(value)).length>MAX_QUIZ_BYTES)throw Error('This quiz is too large. Remove a few photos or use smaller images.');
   const questions=value.questions.map((q,i)=>{
     if(typeof q.text!=='string'||q.text.trim().length<4||q.text.length>240) throw Error(`Question ${i+1} needs 4–240 characters.`);
     if(!Array.isArray(q.options)||q.options.length<2||q.options.length>4||q.options.some(x=>typeof x!=='string'||!x.trim()||x.length>100)) throw Error(`Question ${i+1} needs 2–4 short answers.`);
     if(new Set(q.options.map(x=>x.trim().toLowerCase())).size!==q.options.length) throw Error(`Question ${i+1} has duplicate answers.`);
     if(!Array.isArray(q.correct)||!q.correct.length||q.correct.some(n=>!Number.isInteger(n)||n<0||n>=q.options.length)||new Set(q.correct).size!==q.correct.length) throw Error(`Mark the correct answer(s) for question ${i+1}.`);
-    return {id:String(q.id||i).slice(0,100),text:q.text.trim(),options:q.options.map(x=>x.trim()),correct:[...q.correct],type:q.correct.length>1?'multi':q.options.length===2?'boolean':'single',fact:String(q.fact||'').slice(0,280),image:Object.hasOwn(MEDIA,q.image)?q.image:null,clue:String(q.clue||'').slice(0,300),difficulty:['easy','hard'].includes(q.difficulty)?q.difficulty:value.difficulty==='hard'?'hard':'easy'};
+    return {id:String(q.id||i).slice(0,100),text:q.text.trim(),options:q.options.map(x=>x.trim()),correct:[...q.correct],type:q.correct.length>1?'multi':q.options.length===2?'boolean':'single',fact:String(q.fact||'').slice(0,280),image:Object.hasOwn(MEDIA,q.image)?q.image:null,photo:validatePhoto(q.photo),photoAlt:String(q.photoAlt||'Your quiz photo').slice(0,180),clue:String(q.clue||'').slice(0,300),difficulty:['easy','hard'].includes(q.difficulty)?q.difficulty:value.difficulty==='hard'?'hard':'easy'};
   });
   return {id:String(value.id||'custom').slice(0,64),title:value.title.trim(),icon:'✎',color:'pink',difficulty:value.difficulty==='hard'?'hard':'easy',questions};
 }
@@ -41,7 +43,7 @@ export function createRoom(pin,pack,settings={},now=Date.now()) {
 }
 export function joinRoom(room,input,now=Date.now()) {
   if(room.phase!=='lobby') throw Error('This quiz has started. Join the next round!');
-  if(room.players.length>=MAX_PLAYERS) throw Error('This room is full (200 players).');
+  if(room.players.length>=MAX_PLAYERS) throw Error(`This room is full (${MAX_PLAYERS} players).`);
   const name=cleanName(input.name);
   if(room.players.some(p=>p.name.toLowerCase()===name.toLowerCase())) throw Error('That nickname is taken in this room. Add a twist!');
   const player={id:crypto.randomUUID(),token:token(),name,avatar:Number.isInteger(input.avatar)&&input.avatar>=0&&input.avatar<8?input.avatar:0,
@@ -100,7 +102,7 @@ export function view(room,authToken,now=Date.now()) {
   if(!host&&!p) throw Error('Your room session has expired. Join again.');
   const revealAnswer=['reveal','finished'].includes(room.phase),q=room.questions[room.index];
   const board=ranking(room).map((row,i)=>({id:row.id,name:row.name,avatar:row.avatar,team:row.team,score:row.score,rank:i+1,change:row.previousRank?row.previousRank-i-1:0,points:revealAnswer?row.last?.points||0:0,wins:row.wins,correctCount:row.correctCount,bestStreak:row.bestStreak}));
-  const question=q?{text:q.text,options:q.options,type:q.type,image:q.image,clue:q.clue,...(revealAnswer?{correct:q.correct,fact:q.fact}:{})}:null;
+  const question=q?{text:q.text,options:q.options,type:q.type,image:q.image,photo:q.photo,photoAlt:q.photoAlt,clue:q.clue,...(revealAnswer?{correct:q.correct,fact:q.fact}:{})}:null;
   return {pin:room.pin,roomId:room.id,title:room.title,packId:room.packId,phase:room.phase,index:room.index,total:room.questions.length,round:room.round,
     settings:room.settings,serverNow:now,startAt:room.startAt,deadline:room.deadline,nextAt:room.nextAt,expiresAt:room.expiresAt,host,board,question,
     answered:room.players.filter(p=>p.answer).length,self:p?{id:p.id,locked:!!p.answer,choices:p.answer?.choices||[],streak:p.streak,last:revealAnswer?p.last:null}:null,

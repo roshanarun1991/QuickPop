@@ -5,14 +5,14 @@ import {createRoom,joinRoom,startQuestion,answerQuestion,reveal,scoreAnswer,rank
 const now=100000;
 function setup(settings={}){const room=createRoom('0123',PACKS[0],{shuffle:false,...settings},now);const player=joinRoom(room,{name:'Fika Fox',avatar:1},now);return {room,player};}
 test('All topic packs have valid unique question records',()=>{
- assert(PACKS.length>=26);const ids=new Set();
+ assert(PACKS.length>=50);const ids=new Set();
  for(const p of PACKS){validateQuiz(p);assert.equal(new Set(p.questions.map(q=>q.text+q.image)).size,p.questions.length,`Repeated question in ${p.id}`);assert(p.questions.length>=10&&p.questions.length<=20);assert(p.source.startsWith('https://'));for(const q of p.questions){assert(!ids.has(q.id));ids.add(q.id);assert(q.fact.length>5);}}
- assert(ids.size>=520);assert(new Set(PACKS.flatMap(p=>p.questions.map(q=>q.correct[0]))).size===4);
+ assert(ids.size>=990);assert(new Set(PACKS.flatMap(p=>p.questions.map(q=>q.correct[0]))).size===4);
 });
 test('Daily Pop deterministic, five distinct questions, date changes',()=>{const a=dailyPack('2026-10-20'),b=dailyPack('2026-10-20');assert.deepEqual(a,b);assert.equal(new Set(a.questions.map(q=>q.id)).size,5);assert.notDeepEqual(a.questions,dailyPack('2026-10-21').questions);});
 
 test('Question content is unique despite punctuation, case and spacing differences',()=>{
- const normalize=s=>s.normalize('NFKD').toLowerCase().replace(/[^a-z0-9]/g,'');
+ const normalize=s=>s.normalize('NFKD').toLowerCase().replace(/[^\p{Letter}\p{Number}\p{Extended_Pictographic}]/gu,'');
  for(const pack of PACKS){const seen=new Set();for(const q of pack.questions){
   const key=normalize(q.text)+'|'+(q.image||'');
   assert(!seen.has(key),`Repeated content in ${pack.id}: ${q.text}`);seen.add(key);
@@ -61,7 +61,7 @@ test('Every pack supports complete six- and ten-question games without repetitio
 test('Validate quiz rejects malformed inputs and duplicate options',()=>{for(const invalid of [null,{}, {...PACKS[0],questions:[]},{...PACKS[0],questions:[...PACKS[0].questions.slice(1),{text:'Choose this',options:['Same','same'],correct:[0]}]}])assert.throws(()=>validateQuiz(invalid));});
 test('Nickname validation and display safety',()=>{assert.equal(cleanName('  Fika   Fox '),'Fika Fox');for(const s of ['', '<script>', 'a'.repeat(17),'test\u202eevil','fuck'])assert.throws(()=>cleanName(s));});
 test('PIN keeps leading zero; host token is independent of PIN',()=>{const{room}=setup();assert.equal(room.pin,'0123');assert(room.hostToken.length>=64);assert.notEqual(room.hostToken,room.pin);});
-test('Lobby rejects duplicate names and enforces capacity 200',()=>{const{room}=setup();assert.throws(()=>joinRoom(room,{name:'fika fox'}));for(let i=1;i<MAX_PLAYERS;i++)joinRoom(room,{name:'Player '+i},now);assert.equal(room.players.length,200);assert.throws(()=>joinRoom(room,{name:'Too many'}));});
+test('Lobby rejects duplicate names and enforces capacity 25',()=>{const{room}=setup();assert.throws(()=>joinRoom(room,{name:'fika fox'}));for(let i=1;i<MAX_PLAYERS;i++)joinRoom(room,{name:'Player '+i},now);assert.equal(room.players.length,25);assert.throws(()=>joinRoom(room,{name:'Too many'}));});
 test('Start requires a player and locks new joins',()=>{assert.throws(()=>startQuestion(createRoom('1234',PACKS[0]),now));const{room}=setup();startQuestion(room,now);assert.throws(()=>joinRoom(room,{name:'Late'}));assert.equal(room.startAt,now+1500);});
 test('Only the current question in its server time window accepts answers',()=>{const{room,player}=setup();startQuestion(room,now);assert.throws(()=>answerQuestion(room,player,[0],0,now));assert.throws(()=>answerQuestion(room,player,[0],1,now+2000));assert.throws(()=>answerQuestion(room,player,[0],0,room.deadline+1));});
 test('Duplicate answers cannot change the first locked answer',()=>{const{room,player}=setup();startQuestion(room,now);answerQuestion(room,player,[0],0,now+2000);assert.throws(()=>answerQuestion(room,player,[1],0,now+2001));assert.deepEqual(player.answer.choices,[0]);});

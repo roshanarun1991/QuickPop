@@ -6,10 +6,10 @@ const base=process.env.TEST_URL||'http://127.0.0.1:8787/';
 try{
  const animated=await browser.newContext({reducedMotion:'no-preference'}),creditPage=await animated.newPage();
  await creditPage.goto(base);await creditPage.locator('.powered-type').waitFor();await creditPage.evaluate(()=>document.fonts.ready);
- const frames=await creditPage.locator('.powered-type').evaluate(el=>{const a=el.getAnimations()[0];a.pause();return [0,3500,6999].map(time=>{a.currentTime=time;return {width:el.clientWidth,full:el.scrollWidth};});});
+ const frames=await creditPage.locator('.powered-type').evaluate(el=>{const a=el.getAnimations()[0];a.pause();return [0,5000,8999].map(time=>{a.currentTime=time;return {width:el.clientWidth,full:el.scrollWidth};});});
  assert(frames[0].width<2&&frames[1].width>=frames[1].full-1&&frames[2].width<2);
- for(const route of ['#host/friends','#join','#builder','#daily']){await creditPage.goto(base+route);assert(await creditPage.locator('.footer-credit').isVisible());}
- console.log('PASS footer types the complete RANS credit, erases it, and appears across routes');
+ for(const route of ['#host/friends','#join','#builder','#daily']){await creditPage.goto(base+route);assert(await creditPage.locator('.footer-credit:visible,.play-credit:visible').isVisible());}
+ console.log('PASS footer types the complete Roshan Arun Designs credit, erases it, and appears across routes');
  await animated.close();
  const offline=await browser.newContext({serviceWorkers:'allow'});
  const page=await offline.newPage();

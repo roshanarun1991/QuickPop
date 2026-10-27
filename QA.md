@@ -5,7 +5,7 @@
 1. Engine/content tests pass.
 2. Browser suite passes on 1440, 1024, 768, 390 and 320-pixel widths.
 3. Accessibility scans report no WCAG A/AA violations on checked screens.
-4. One local room supports 200 players and WebSocket connections; the next player is refused.
+4. One local room supports 25 players and WebSocket connections; the next player is refused.
 5. Cloudflare deployment succeeds on the free plan.
 6. A real game on the public HTTPS site works in independent host and player sessions, including refresh, reveal, final score, rematch and close.
 
@@ -15,7 +15,7 @@ Local results do not satisfy gates 5–6. Do not label a repository upload as a 
 
 | Area | Acceptance |
 | --- | --- |
-| Packs | 20 valid packs, 200 unique questions; 2–4 distinct options, valid correct indices, explanations and source references. |
+| Packs | 50 valid packs, 990 unique question records; 2–4 distinct options, valid correct indices, explanations and source references. |
 | Daily | Five distinct questions; deterministic by UTC date; a new date changes the selection. |
 | Inputs | Reject missing/oversized quizzes, duplicate answers, unsafe/long names and invalid choices. |
 | PIN | Four characters including leading zero; host token unrelated to PIN. |
@@ -31,7 +31,7 @@ Local results do not satisfy gates 5–6. Do not label a repository upload as a 
 ## HTTP and multiplayer integration
 
 - Create, join, invalid nickname, room full and late-join rejection.
-- 200 players behind one simulated office network can join; successful lookups are not mistaken for PIN guesses.
+- 25 players behind one simulated office network can join; successful lookups are not mistaken for PIN guesses.
 - 200 player sockets receive consistent lobby state.
 - Invalid authentication gets no room state.
 - Player cannot advance; host can advance, rematch, kick in lobby and close.
@@ -96,7 +96,7 @@ Solo and Daily Pop answer controls sit in a fixed bottom bar with safe-area padd
 
 ## Topic and agent release — 22 October 2026
 
-Local acceptance: 24 engine/agent tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 200 players, four resilience checks, and 25 new-feature checks.
+Local acceptance: 24 engine/agent tests, 117 browser checks (including accessibility), 40 static-site checks across five viewports, 12 server/load checks including 25 players, four resilience checks, and 25 new-feature checks.
 
 New-feature coverage: 26 curated packs with ten easy and ten hard questions each; valid bundled illustrations, flags and marks; keyboard suggestions and Coming soon; phone/desktop picture rendering; fixed Next control; invalid password rejection; prepared GitHub request; mocked ten-question draft preview; review checkbox required before preparing publication; invalid request and generated-output rejection. CI uses a test-only WebCrypto result to unlock Admin after testing incorrect-password rejection, without committing the owner's passcode. The real passcode is checked separately. AI factual accuracy requires review and is not certified by schema tests.
 
@@ -121,3 +121,8 @@ Regression coverage now normalizes punctuation/case/spacing, checks previously r
 Content references used for the replacement review include [Visit Sweden's Midsummer guide](https://visitsweden.com/what-to-do/culture-history-and-art/swedish-traditions/midsummer-tradition/midsummer/), [Incredible India's Holi guide](https://www.incredibleindia.gov.in/en/festivals-and-events/holi), [Imphal and Yaoshang](https://www.incredibleindia.gov.in/en/manipur/imphal), and [Le Cordon Bleu on choux pastry](https://app.ckbk.com/reference/cuis81374c03s001ss021e001/pate-a-choux).
 
 The GitHub workflow reruns all suites before Pages publication. Cloudflare production deployment and real-device multiplayer acceptance remain pending the owner's manual connection; Windows setup and automatic future deployment steps are in README.md.
+
+## 2026-10-27 upgrade validation
+
+Local checks passed: 27 engine/content/agent tests; 13 server checks including 25 connected players completing three rounds; 117 browser/accessibility checks; 40 static-site checks; 33 feature checks; 4 resilience checks; and 23 upgrade checks across Chromium and WebKit. The new suite covers 320–1366px gameplay, portrait/landscape, single-tap submission during incoming player updates, visible Next controls, long custom content, photo compression/export/import, and reconnects. WebKit on Windows lacks Web Audio: its audio check covers graceful fallback; Chromium audio playback passed. Physical iPhone testing remains a manual acceptance check. Public deployment verification is recorded separately from these local results.
+

@@ -4,19 +4,19 @@ A party-ready quiz for colleagues, friends and family. No accounts; join with a 
 
 ## What works
 
-26 original quiz packs / 520 questions (plus owner-approved generated packs); live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
+49 curated quiz packs / 980 questions, plus the existing 10-question generated pack (50 topics / 990 questions total); live host and phone views; PIN and QR lobby; server-timed scoring; reconnects; host controls; per-question leaderboards; podium; rematches; accuracy scoring; Daily Pop; untimed solo practice; private quiz builder; result sharing; dark mode.
 
 See [DESIGN_REVIEW.md](DESIGN_REVIEW.md) for the review and deliberately deferred features, and [QA.md](QA.md) for checks and deployment acceptance.
 
 ## Public GitHub Pages edition
 
-The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Join a Quiz, PIN/nickname/avatar entry and hosting setup are visible. New games use individual scores; team selection is hidden for now. A clear notice explains that creating or joining a live room requires the multiplayer service; attempted submissions display this notice without making unavailable API requests. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
+The site at https://roshanarun1991.github.io/QuickPop/ is built and published by GitHub Actions after QA. It supports 6- or 10-question solo rounds, Daily Pop, the private builder, result sharing and themes. Join a Quiz, PIN/nickname/avatar entry and hosting setup are visible. New games use individual scores; team selection is hidden for now. A clear notice explains that creating or joining a live room requires the multiplayer service; hosting and joining continue on the live Cloudflare site without making API requests to Pages. Publishing raw source from a branch will not work: use the Actions source and the bundled dist artifact.
 
 ## Runs without your computer
 
-The published solo website runs on **GitHub Pages**. Quiz generation runs on GitHub Actions using an open-source model on the runner. Neither needs your computer. Multiplayer is prepared for **Cloudflare Workers + SQLite Durable Objects**, but Cloudflare connection and deployment are still pending. No paid AI API key is required.
+The published solo website runs on **GitHub Pages**. Quiz generation runs on GitHub Actions using an open-source model on the runner. Neither needs your computer. Multiplayer runs on **Cloudflare Workers + SQLite Durable Objects** at https://quickpop.rans-quiz.workers.dev/. No paid AI API key is required.
 
-The multiplayer service is not deployed until `wrangler deploy` succeeds and the live checks below pass. A GitHub source repository alone does not host the live rooms.
+The deployed website and rooms keep running when your computer is switched off. Future automatic Cloudflare releases require the GitHub secret and variable described below; until configured, deploy updates manually.
 
 ## Local development
 
@@ -55,13 +55,13 @@ npm.cmd run deploy
 
 Sign in to your Cloudflare account and approve the login in the browser when prompted. The configured account ID is `ad24429455fe95738133b4c8302b4a6a`; if using another account, update `account_id` in `wrangler.toml` first. If Cloudflare asks for a workers.dev subdomain, choose one. Stay on Workers Free; the existing SQLite Durable Object setup supports that plan.
 
-Share the printed Workers URL with both hosts and players. That address serves the website and multiplayer together, so creating and joining rooms works there. The GitHub Pages URL remains the solo edition; deploying a Worker does not automatically connect Pages to it. Your computer can be switched off after deployment.
+Share the printed Workers URL with both hosts and players. That address serves the website and multiplayer together, so creating and joining rooms works there. The GitHub Pages edition supports solo play and hands hosting/joining over to the Cloudflare address. Your computer can be switched off after deployment.
 
 For later updates without your computer: create a Cloudflare API token using the **Edit Cloudflare Workers** template, restricted to this account. In GitHub, open **Settings → Secrets and variables → Actions**. Add the token as a repository secret named `CLOUDFLARE_API_TOKEN`; on the Variables tab add `CLOUDFLARE_DEPLOY` with value `true`. Then run **QuickPop - test and publish** from Actions, or push a change to `main`. The existing workflow will test and deploy it. Never paste the token into source files or the website's Admin form.
 
 ## Automatic checks and future deployment
 
-The GitHub workflow runs engine tests, builds assets, runs the local Worker, tests 200 connected players and runs browser/accessibility checks on every push.
+The GitHub workflow runs engine tests, builds assets, runs the local Worker, tests 25 connected players and runs browser/accessibility checks on every push.
 
 For automatic production updates, either connect this GitHub repository in Cloudflare Workers Builds, or add a scoped `CLOUDFLARE_API_TOKEN` to GitHub Actions secrets and set the repository variable `CLOUDFLARE_DEPLOY` to `true`. The workflow's deployment job is disabled until that variable is set. Keep API tokens out of files and commits.
 
@@ -111,3 +111,15 @@ The client passcode is a convenience gate, not secure server authentication. Git
 The agent retrieves a public Wikipedia reference, then uses `qwen2.5:3b` through Ollama. Each generated question must include an exact excerpt containing its answer; Admin shows the source link and excerpt for review. This evidence check reduces unsupported content but cannot prove the question or answer is correct. Wikipedia material is attributed under CC BY-SA 4.0. It does not use the retired GitHub Models API. Agent publication calls the reusable QA workflow explicitly because pushes made using GITHUB_TOKEN do not trigger ordinary push workflows.
 
 Generation uses two small model batches. If the model cannot supply ten supported items, the agent completes the draft with source-based fill-the-gap questions using names from the reference. These are marked `reference-clue` in the saved JSON. All questions still require owner review; topics with insufficient reference material fail clearly instead of inventing facts.
+
+## October 2026 gameplay update
+
+- Rooms support 25 players; all 25 appear on leaderboards.
+- Answer buttons remain in place while other players answer, preventing interrupted taps. One submitted answer locks immediately, then confirms with the server.
+- Compact portrait and landscape game layouts keep controls visible. Very long custom questions and answer lists scroll within their own areas. Browser zoom remains available.
+- Sound is off initially. Tap Sound to enable original synthetic background music; volume is in the footer. It pauses outside questions and when the tab is hidden. No downloaded recordings or music service is used.
+- The creator credit types “Powered by Roshan Arun Designs”. Reduced-motion users see static text.
+- Builder photos are resized locally to JPEG, stripped of metadata and limited to about 50 KB each. Quiz files are limited to 1.1 MB. Photos survive draft reload/export/import and are shared only with the hosted room. If a browser cannot decode HEIC, export a JPEG/PNG first.
+- New packs include public-domain lyric completions, movie clues, Bollywood vs Hollywood, licensed meme photos, documented celebrity trivia and playful true/false pop facts. Image attribution is available under Text clue & credits and in MEDIA_CREDITS.md.
+
+Run `node upgrade-tests.mjs` after installing Chromium and WebKit with Playwright. Emulation tests do not replace checking an actual iPhone; WebKit on Windows does not expose Web Audio, so its audio check verifies graceful fallback.

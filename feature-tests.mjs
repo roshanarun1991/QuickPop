@@ -10,9 +10,9 @@ import {readFile,mkdir} from 'node:fs/promises';
 const base=process.env.TEST_URL||'http://127.0.0.1:8787/';
 let checks=0;const pass=s=>{checks++;console.log('PASS',s)};
 for(const p of PACKS.filter(p=>!p.id.startsWith('generated-'))){assert.deepEqual(difficultyModes(p),['easy','hard']);const easy=chooseDifficulty(p,'easy'),hard=chooseDifficulty(p,'hard');assert.equal(easy.questions.length,10);assert.equal(hard.questions.length,10);assert(hard.questions.every(q=>!easy.questions.some(e=>e.id===q.id)));}
-pass('26 packs have separate ten-question easy and hard banks');
-for(const p of PACKS)for(const q of p.questions)if(q.image){assert(MEDIA[q.image]?.svg.includes('<svg'));assert(!/(?:href|src)=["']https?:|<script|onload=/.test(MEDIA[q.image].svg));}
-pass('All quiz images are bundled, self-contained SVGs');
+pass('49 curated packs have separate ten-question easy and hard banks');
+for(const p of PACKS)for(const q of p.questions)if(q.image){const m=MEDIA[q.image];assert(m);if(m.svg){assert(m.svg.includes('<svg'));assert(!/(?:href|src)=["']https?:|<script|onload=/.test(m.svg));}else{assert(m.src.startsWith('data:image/jpeg;base64,'));assert(m.license&&m.source&&m.credit);}}
+pass('All quiz images are bundled; photographs have attribution and licences');
 const request={action:'generate',requestId:'11111111-1111-4111-8111-111111111111',topic:'Solar System',difficulty:'easy'};
 assert.deepEqual(validateRequest(request),request);for(const bad of [{...request,requestId:'../bad'},{...request,topic:'<script>'},{...request,difficulty:'extreme'}])assert.throws(()=>validateRequest(bad));
 const quiz=validateGenerated(chooseDifficulty(PACKS.find(p=>p.id==='science'),'easy'),request);assert.equal(quiz.questions.length,10);assert.throws(()=>validateGenerated({...quiz,questions:quiz.questions.slice(1)},request));assert.throws(()=>validateGenerated({...quiz,questions:Array(10).fill(quiz.questions[0])},request));assert.throws(()=>checkEvidence({questions:[{sourceQuote:'An invented source passage about the Sun',options:['Sun'],correct:[0]}]},{text:'Mercury is the closest planet to the Sun.'}));pass('Agent schema rejects invalid requests, incomplete, duplicate and unsupported output');

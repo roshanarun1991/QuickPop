@@ -5,7 +5,7 @@ for(const f of ['index.html','style.css','theme.js','icon.svg','manifest.webmani
 await copyFile('node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2','dist/anton.woff2');
 await copyFile('node_modules/@fontsource/courier-prime/files/courier-prime-latin-400-normal.woff2','dist/courier.woff2');
 for(const name of ['anton','courier-prime'])await copyFile(`node_modules/@fontsource/${name}/LICENSE`,`dist/${name}-LICENSE.txt`);
-await build({entryPoints:['app.js'],outfile:'dist/app.js',bundle:true,minify:true,format:'esm',target:'es2022'});
+await build({entryPoints:['app.js'],outfile:'dist/app.js',bundle:true,minify:true,format:'esm',target:['es2020','safari15.4']});
 const revision=process.env.GITHUB_SHA?.slice(0,12)||String(Date.now());
 const versionedFiles=['style.css','theme.js','app.js'];
 let html=await readFile('dist/index.html','utf8');

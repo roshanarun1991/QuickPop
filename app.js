@@ -1,3 +1,5 @@
+import {preparePhoto,MAX_QUIZ_BYTES} from './photos.js';
+import {createMusic} from './music.js';
 import {mediaData} from './visual-media.js';
 import {searchPacks} from './search.js';
 import {renderAdmin} from './admin.js';
@@ -7,8 +9,9 @@ import QRCode from 'qrcode';
 const $=s=>document.querySelector(s),main=$('#main'),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shapes=['▲','●','■','◆'],colors=['blue','yellow','green','pink'];
 const staticHost=location.hostname.endsWith('.github.io')||globalThis.QUICKPOP_STATIC===true;
-const liveUnavailable='Live multiplayer is not connected yet. You can explore the setup now; joining and starting rooms will work once the game server is connected. Solo play and Daily Pop are ready.';
-const liveNotice=()=>staticHost?`<p class="notice live-note">${liveUnavailable}</p>`:'';
+const LIVE_SITE='https://quickpop.rans-quiz.workers.dev/';
+const liveUnavailable='Live multiplayer is on our game site. Open Live Play to host or join up to 25 players. Solo play and Daily Pop also work here.';
+const liveNotice=()=>staticHost?`<p class="notice live-note">${liveUnavailable} <a class="btn small cyan" href="${LIVE_SITE}#home">LIVE PLAY ↗</a></p>`:'';
 const memory=new Map();
 const read=(key,fallback)=>{if(memory.has(key))return memory.get(key);try{return JSON.parse(localStorage.getItem(`quickpop-${key}`))??fallback;}catch{return fallback;}};
 const write=(key,value)=>{memory.set(key,value);try{localStorage.setItem(`quickpop-${key}`,JSON.stringify(value));return true;}catch{toast('Playing without browser storage. Keep this tab open; export drafts to keep them.');return false;}};
@@ -17,7 +20,10 @@ let draft=read('draft',{title:'Our office knows best',questions:[blankQuestion()
 function blankQuestion(){return {text:'',options:['','','',''],correct:[0],fact:''};}
 function toast(message){const el=$('#toast');el.textContent=message;el.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.hidden=true,5000);}
 function error(message){if(message===liveUnavailable&&$('.live-note'))$('.live-note').hidden=true;const el=$('#form-error');if(el){el.textContent=message;el.hidden=false;el.tabIndex=-1;el.focus();}else toast(message);}
-function setPage(html){main.innerHTML=html;main.focus({preventScroll:true});window.scrollTo(0,0);}
+function syncLayout(){const playing=!!document.querySelector('.solo-page,#room-view[data-phase=question]');document.body.classList.toggle('playing-question',playing);music.play(playing);if(playing&&!document.querySelector('.play-credit'))document.querySelector('.solo-page,#room-view')?.insertAdjacentHTML('beforeend','<div class="play-credit"><span class="powered-type">Powered by Roshan Arun Designs</span></div>');}
+function setPage(html){main.innerHTML=html;main.focus({preventScroll:true});window.scrollTo(0,0);syncLayout();}
+function viewportSize(){document.documentElement.style.setProperty('--screen-height',`${window.visualViewport?.height||innerHeight}px`);}
+window.visualViewport?.addEventListener('resize',viewportSize);window.addEventListener('resize',viewportSize);viewportSize();
 function fieldError(){return '<p id="form-error" class="notice error" role="alert" hidden></p>';}
 function modal(title,html){$('#modal-content').innerHTML=`<h2 id="modal-title">${esc(title)}</h2>${html}`;$('#modal').showModal();}
 function closeConnection(){clearTimeout(retryTimer);if(socket){socket.onopen=socket.onmessage=socket.onerror=socket.onclose=null;socket.close();socket=null;}current=null;session=null;lastVersion=-1;}
@@ -35,14 +41,16 @@ function themeDark(){return document.documentElement.dataset.theme?document.docu
 function updateThemeButton(){$('#theme').textContent=themeDark()?'☀':'☾';$('#theme').setAttribute('aria-label',`Switch to ${themeDark()?'day':'night'} mode`);}
 $('#theme').onclick=()=>{const value=themeDark()?'light':'dark';document.documentElement.dataset.theme=value;try{localStorage.setItem('quickpop-theme',value);}catch{}updateThemeButton();};
 updateThemeButton();matchMedia('(prefers-color-scheme:dark)').addEventListener('change',updateThemeButton);
+const audioAvailable=!!(window.AudioContext||window.webkitAudioContext);if(!audioAvailable){sound=false;$('#sound').disabled=true;$('#sound').title='Audio is unavailable in this browser';$('#music-volume').disabled=true;}
+const music=createMusic();music.enable(sound);music.volume(read('volume',.44));$('#music-volume').value=read('volume',.44)*100;$('#music-volume').oninput=e=>{const v=Number(e.target.value)/100;music.volume(v);write('volume',v);};
 function updateSound(){$('#sound').innerHTML=`${sound?'♪':'♫'} <span>Sound ${sound?'on':'off'}</span>`;$('#sound').setAttribute('aria-label',`Sound ${sound?'on':'off'}. Turn sound ${sound?'off':'on'}`);$('#sound').setAttribute('aria-pressed',sound);}
-$('#sound').onclick=()=>{sound=!sound;write('sound',sound);updateSound();if(sound)beep(true);};updateSound();
+$('#sound').onclick=()=>{sound=!sound;write('sound',sound);updateSound();music.enable(sound);music.unlock();if(sound)beep(true);};updateSound();
 function beep(good){if(!sound)return;try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=good?660:220;g.gain.setValueAtTime(.06,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.18);o.start();o.stop(ctx.currentTime+.2);o.onended=()=>ctx.close();}catch{}}
 $('#modal-close').onclick=()=>$('#modal').close();
 $('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))$('#modal').close();});
 $('#privacy').onclick=()=>modal('Good fun. Small footprint.',`
  <p>No accounts, ads or analytics trackers. Your theme, nickname, practice results, quiz drafts and room recovery tokens stay in this browser.</p>
- <p>Live games send nicknames, answers and scores to the hosted game server. Room data is deleted when the host closes it, after 10 minutes on the final screen, or when its time limit expires. Short-lived, hashed network counters help limit PIN guessing.</p>
+ <p>Custom quiz pictures are resized on your device and stored with your draft. Export a quiz to keep a copy. Hosting shares its questions and pictures with participants until the room expires. Only upload pictures you have permission to share.</p><p>Live games send nicknames, answers and scores to the hosted game server. Room data is deleted when the host closes it, after 10 minutes on the final screen, or when its time limit expires. Short-lived, hashed network counters help limit PIN guessing.</p>
  <p>A room PIN is an invitation, not a password. Share it with your group. Hosts can remove players before starting; games lock when they start.</p>
  <p>Live scoring uses answer arrival time at the server. Network speed can make a small difference; choose <b>accuracy scoring</b> for a more relaxed game. This is a social game, not a secure examination.</p>
  <p>Daily Pop changes at midnight UTC. Local results can be cleared with your browser data. Hosting providers necessarily process network requests.</p>
@@ -82,10 +90,10 @@ function hostSetup(id){
  setPage(`<div class="page narrow"><a class="back" href="#home">← ALL TOPICS</a><div class="panel"><div class="setup-head"><div class="setup-icon ${pack.color||'pink'}">${pack.icon||'✎'}</div><div><div class="eyebrow">${esc(pack.category||'YOUR OWN CREATION')}</div><h1>${esc(pack.title)}</h1><p>${pack.questions.length} original questions · play at your pace</p></div></div><p>${esc(pack.description||'Made for your people. Ready for the big screen.')}</p>
  ${liveNotice()}<form id="host-form">${fieldError()}<div class="field"><label for="difficulty">Difficulty</label><select id="difficulty">${difficultyModes(pack).map(d=>`<option value="${d}">${d==='easy'?'Easy · familiar favourites':'Hard · deeper knowledge'}</option>`).join('')}</select></div><div class="two-col"><div class="field"><label for="count">Questions</label><select id="count">${(id==='custom'?[6,10,pack.questions.length].filter((n,i,a)=>n<=pack.questions.length&&a.indexOf(n)===i):[6,10]).map(n=>`<option value="${n}" ${n===Math.min(6,pack.questions.length)?'selected':''}>${n} questions</option>`).join('')}</select></div><div class="field"><label for="seconds">Time per question</label><select id="seconds"><option value="10">10 seconds · Quick</option><option value="15" selected>15 seconds · Classic</option><option value="20">20 seconds · Relaxed</option><option value="30">30 seconds · Extra time</option></select></div></div>
  <details class="details"><summary>MAKE IT YOUR KIND OF GAME</summary><label class="checkline"><input id="accuracy" type="checkbox">Accuracy scoring — no speed bonus</label><label class="checkline"><input id="auto" type="checkbox">Automatically continue after each reveal</label><label class="checkline"><input id="host-plays" type="checkbox">I’m playing on this screen too</label><div class="field"><label for="host-name">My nickname (if playing)</label><input id="host-name" value="Quiz Captain" maxlength="16"></div></details>
- <p class="hint">Up to 200 players. The room locks when you start. Correct answers are revealed together.</p><div class="actions"><button class="btn" id="create-room" type="submit">START A ROOM ↗</button><button class="btn paper" type="button" data-practice="${esc(id)}">TRY SOLO FIRST</button></div></form></div></div>`);
+ <p class="hint">Up to 25 players. The room locks when you start. Correct answers are revealed together.</p><div class="actions"><button class="btn" id="create-room" type="submit">START A ROOM ↗</button><button class="btn paper" type="button" data-practice="${esc(id)}">TRY SOLO FIRST</button></div></form></div></div>`);
  $('#host-form').onsubmit=async e=>{
    e.preventDefault();if(busy)return;busy=true;const b=$('#create-room');b.disabled=true;b.textContent='MAKING ROOM…';
-   try{const result=await api('rooms',{...(id==='custom'?{custom:pack}:{pack:id}),settings:{difficulty:$('#difficulty').value,count:Number($('#count').value),seconds:Number($('#seconds').value),accuracy:$('#accuracy').checked,auto:$('#auto').checked,teams:false,hostPlays:$('#host-plays').checked,hostName:$('#host-name').value}});saveSession(result);location.hash=`room/${result.pin}`;}
+   try{if(staticHost){if(id==='custom')throw Error('Open Live Play and import your exported quiz to host it there.');location.href=LIVE_SITE+`#host/${id}`;return;}const result=await api('rooms',{...(id==='custom'?{custom:pack}:{pack:id}),settings:{difficulty:$('#difficulty').value,count:Number($('#count').value),seconds:Number($('#seconds').value),accuracy:$('#accuracy').checked,auto:$('#auto').checked,teams:false,hostPlays:$('#host-plays').checked,hostName:$('#host-name').value}});saveSession(result);location.hash=`room/${result.pin}`;}
    catch(e){error(e.message);}finally{busy=false;if(b.isConnected){b.disabled=false;b.textContent='START A ROOM ↗';}}
  };
 }
@@ -97,7 +105,7 @@ function joinScreen(pin=''){
  $('#join-form').onsubmit=async e=>{
   e.preventDefault();if(busy)return;busy=true;const b=$('#join-button');b.disabled=true;
   try{const name=cleanName($('#nickname').value),pin=$('#pin').value;if(!/^\d{4}$/.test(pin))throw Error('Enter the four digits from the host’s screen.');
-   if(staticHost)throw Error(liveUnavailable);
+   if(staticHost){location.href=LIVE_SITE+`#join/${pin}`;return;}
    const existing=read('sessions',{})[pin];
    if(existing&&confirm('You have a saved session for this PIN. Reconnect to it?')){location.hash=`room/${pin}`;return;}
    const result=await api(`rooms/${pin}/join`,{name,avatar,team:0});write('nickname',name);saveSession(result);location.hash=`room/${pin}`;
@@ -113,17 +121,19 @@ function roomRoute(pin){
 function connectRoom(){
  if(!session)return;const url=new URL(`./api/rooms/${session.pin}/socket`,location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';
  socket=new WebSocket(url);
- socket.onopen=()=>{retries=0;socket.send(JSON.stringify({type:'auth',token:session.token}));connectionStatus(true);};
+ socket.onopen=()=>{retries=0;answerPending=false;socket.send(JSON.stringify({type:'auth',token:session.token}));connectionStatus(true);};
  socket.onmessage=e=>{
   let msg;try{msg=JSON.parse(e.data);}catch{return;}
   if(msg.type==='state'){
    offset=msg.state.serverNow-Date.now();
-   if(current?.index!==msg.state.index||current?.round!==msg.state.round)multi=[];
+   if(current?.index!==msg.state.index||current?.round!==msg.state.round){multi=[];answerPending=false;}
+   const sameQuestion=current?.phase==='question'&&msg.state.phase==='question'&&current.index===msg.state.index&&current.round===msg.state.round&&!!$('#room-view');
    current=msg.state;
+   if(sameQuestion){lastVersion=current.version;patchQuestion();connectionStatus(true);return;}
    if(current.version!==lastVersion||!$('#room-view')){const previousPhase=$('#room-view')?.dataset.phase;lastVersion=current.version;renderRoom();if(current.phase==='reveal'&&previousPhase!=='reveal'&&current.self)beep(current.self.last?.correct);}
    connectionStatus(true);
   }else if(msg.type==='error'){
-   toast(msg.message);
+   answerPending=false;patchQuestion();toast(msg.message);
    if(/session.*(expired|ended)|Join again/i.test(msg.message)){const all=read('sessions',{});delete all[session.pin];write('sessions',all);closeConnection();location.hash='join';}
   }else if(msg.type==='closed'){closeConnection();location.hash='home';toast('That room has closed. A new quiz is one tap away.');}
  };
@@ -134,7 +144,10 @@ function connectRoom(){
  };
  socket.onerror=()=>connectionStatus(false);
 }
-function connectionStatus(connected){const el=$('#connection');if(el){el.textContent=connected?'LIVE & CONNECTED':'RECONNECTING…';el.classList.toggle('offline',!connected);}const now=Date.now()+offset;document.querySelectorAll('[data-answer]').forEach(b=>{if(!solo&&current?.phase==='question')b.disabled=!connected||!current.self||!!current.self.locked||now<current.startAt||now>=current.deadline;});}
+let answerPending=false;
+function patchQuestion(){if(!current)return;if(current.self?.locked)answerPending=false;const selected=current.self?.locked?current.self.choices:multi;document.querySelectorAll('[data-answer]').forEach(b=>{const yes=selected.includes(+b.dataset.answer);b.classList.toggle('selected',yes);b.setAttribute('aria-pressed',String(yes));});if($('#answered-count'))$('#answered-count').textContent=current.answered;if($('#lock-status'))$('#lock-status').textContent=current.self?.locked?'✓ ANSWER LOCKED. THE REVEAL IS COMING.':answerPending?'SENDING YOUR ANSWER…':'TRUST YOUR FIRST INSTINCT.';if(current.self?.locked)document.querySelector('[data-action=lock-multi]')?.remove();updateTimer();}
+function submitAnswer(choices){if(answerPending||current?.self?.locked)return;if(!socket||socket.readyState!==1){toast('Reconnecting. Please try again when connected.');return;}answerPending=true;multi=[...choices];patchQuestion();send('answer',{choices:[...choices],index:current.index});connectionStatus(true);}
+function connectionStatus(connected){const el=$('#connection');if(el){el.textContent=connected?'LIVE & CONNECTED':'RECONNECTING…';el.classList.toggle('offline',!connected);}const now=Date.now()+offset;document.querySelectorAll('[data-answer]').forEach(b=>{if(!solo&&current?.phase==='question')b.disabled=!connected||!current.self||!!current.self.locked||answerPending||now<current.startAt||now>=current.deadline;});}
 function send(type,extra={}){
  if(!socket||socket.readyState!==WebSocket.OPEN){toast('Reconnecting. Give us a moment before trying again.');return;}
  socket.send(JSON.stringify({type,...extra}));
@@ -142,8 +155,8 @@ function send(type,extra={}){
 function shareLink(pin){const url=new URL(location.href);url.hash=`join/${pin}`;return url.toString();}
 async function copy(text){try{await navigator.clipboard.writeText(text);toast('Copied. Send it to your people!');}catch{modal('Copy this link',`<div class="field"><input readonly value="${esc(text)}" aria-label="Link to copy" onclick="this.select()"></div>`);}}
 function boardHtml(s){
- const rows=s.board.slice(0,10),self=s.board.find(p=>p.id===s.self?.id),max=Math.max(1,...s.board.map(p=>p.score));
- if(self&&self.rank>10)rows.push(self);
+ const rows=s.board.slice(0,25),self=s.board.find(p=>p.id===s.self?.id),max=Math.max(1,...s.board.map(p=>p.score));
+ if(self&&self.rank>25)rows.push(self);
  return `<div class="board">${rows.map(p=>`<div class="board-row" ${p.id===s.self?.id?'aria-label="Your rank"':''}><div class="board-fill" style="width:${Math.max(3,p.score/max*100)}%"></div><span class="board-rank">${p.rank===1?'♛':p.rank}</span><span class="board-avatar">${AVATARS[p.avatar]}</span><span class="board-name">${esc(p.name)}${p.id===s.self?.id?' (you)':''}<br><span class="gain">${p.change>0?'↑ '+p.change:p.change<0?'↓ '+Math.abs(p.change):'—'} ${p.points?'· +'+p.points:''}</span></span><span class="board-score">${p.score.toLocaleString()} <small style="font:10px var(--mono)">PTS</small></span></div>`).join('')}</div>`;
 }
 function teamHtml(s){
@@ -164,13 +177,14 @@ function renderRoom(){
  }
  if(s.phase==='reveal'&&s.distribution)body=body.replace('<p class="notice">',`<div class="distribution" aria-label="Answers chosen">${s.distribution.map((n,i)=>`<div>${shapes[i]}<b>${n}</b>VOTE${n===1?'':'S'}</div>`).join('')}</div><p class="notice">`);
  main.innerHTML=`<div class="page" id="room-view" data-phase="${s.phase}">${top}${body}</div>`;
+ syncLayout();window.scrollTo(0,0);
  if(s.phase==='lobby')QRCode.toCanvas($('#qr'),shareLink(s.pin),{width:190,margin:1,color:{dark:'#161713',light:'#ffffff'}}).catch(()=>toast('QR unavailable. Use the PIN or invite link.'));
  if(s.phase==='question'){updateTimer();if(s.self?.locked)document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=true);}
  if(s.phase==='finished'){recordLiveResult(s);addCardButton();}
 }
-function questionMedia(q){const m=mediaData(q.image);return m?`<figure class="picture-question"><img class="quiz-picture" src="${m.src}" alt="${esc(m.alt)}" width="320" height="200"><details><summary>Text clue</summary><p>${esc(q.clue||m.alt)}</p></details></figure>`:'';}
+function questionMedia(q){if(q.photo)return `<figure class="picture-question"><img class="quiz-picture" src="${esc(q.photo)}" alt="${esc(q.photoAlt||'Your quiz photo')}" width="320" height="200"></figure>`;const m=mediaData(q.image);return m?`<figure class="picture-question"><img class="quiz-picture" src="${m.src}" alt="${esc(m.alt)}" width="320" height="200"><details><summary>Text clue & credits</summary><p>${esc(q.clue||m.alt)}</p>${m.license?`<p class="media-credit"><a href="${esc(m.source)}" target="_blank" rel="noopener">Photo: ${esc(m.credit)}</a> · <a href="${esc(m.licenseUrl)}" target="_blank" rel="noopener">${esc(m.license)}</a>. ${esc(m.changes)}</p>`:""}</details></figure>`:'';}
 function questionHtml(q,index,total,timed){
- return `<div class="question-header"><span>QUESTION ${index+1} / ${total}</span><span id="time-label">${timed?'GET READY':'TAKE YOUR TIME'}</span></div>${timed?'<div class="timer-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="timer-fill"></div></div>':''}<h2 class="question-title">${esc(q.text)}</h2>${questionMedia(q)}<p class="question-note">${q.type==='multi'?'PICK ALL CORRECT ANSWERS, THEN LOCK IN':'PICK ONE ANSWER'}</p>`;
+ return `<div class="question-header"><span>QUESTION ${index+1} / ${total}</span><span id="time-label">${timed?'GET READY':'TAKE YOUR TIME'}</span></div>${timed?'<div class="timer-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="timer-fill"></div></div>':''}<div class="question-content ${q.photo||q.image?'has-picture':''}" tabindex="0" aria-label="Question and picture"><h2 class="question-title">${esc(q.text)}</h2>${questionMedia(q)}</div><p class="question-note">${q.type==='multi'?'PICK ALL CORRECT ANSWERS, THEN LOCK IN':'PICK ONE ANSWER'}</p>`;
 }
 function answersHtml(q,selected=[],disabled=false,revealed=false){
  return q.options.map((option,i)=>`<button class="answer ${colors[i]} ${selected.includes(i)?'selected':''} ${revealed?(q.correct.includes(i)?'correct':selected.includes(i)?'chosen-wrong':'incorrect'):''}" data-answer="${i}" aria-pressed="${selected.includes(i)}" ${disabled?'disabled':''}><span class="shape" aria-hidden="true">${shapes[i]}</span><span>${esc(option)}</span>${revealed?`<span class="sr">${q.correct.includes(i)?'Correct answer':'Incorrect answer'}</span>`:''}</button>`).join('');
@@ -180,7 +194,7 @@ function updateTimer(){
  const fill=$('.timer-fill'),label=$('#time-label');if(fill){fill.style.width=`${percent}%`;fill.classList.toggle('urgent',remaining<5000);fill.parentElement.setAttribute('aria-valuenow',Math.round(percent));}
  if(label)label.textContent=before>0?`READY IN ${Math.ceil(before/1000)}`:remaining>0?`${Math.ceil(remaining/1000)} SECONDS`:'REVEALING…';
  if(before>0||remaining===0)document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=true);
- else if(current.self&&!current.self.locked&&socket?.readyState===1)document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=false);
+ else if(current.self&&!current.self.locked&&!answerPending&&socket?.readyState===1)document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=false);
 }
 setInterval(updateTimer,100);
 function selfAward(s){const p=s.board.find(p=>p.id===s.self.id);return `<div class="badge-strip"><span class="badge">#${p.rank} OF ${s.board.length}</span><span class="badge">${p.correctCount}/${s.total} CORRECT</span>${p.rank===1?'<span class="badge">♛ FIRST PLACE ENERGY</span>':''}${p.bestStreak>=3?'<span class="badge">🔥 ON A ROLL</span>':''}${p.wins?`<span class="badge">${p.wins} SERIES WIN${p.wins===1?'':'S'}</span>`:''}</div>`;}
@@ -240,31 +254,33 @@ async function shareResult(){
  await copy(text+url);
 }
 function builder(){
- setPage(`<div class="page narrow"><a class="back" href="#home">← BACK TO TOPICS</a><div class="eyebrow">THE BEST TOPIC? YOUR PEOPLE.</div><h1 style="font-size:60px;margin:14px 0">MAKE IT<br>AN INSIDE QUIZ.</h1><p>Write 3–20 questions. Tick the correct answer — or more than one for a multi-select. Your draft stays on this device.</p>${fieldError()}<div class="field"><label for="quiz-title">Quiz title</label><input id="quiz-title" maxlength="60" value="${esc(draft.title)}"></div><div class="field"><label for="draft-difficulty">Quiz difficulty</label><select id="draft-difficulty"><option value="easy" ${draft.difficulty!=='hard'?'selected':''}>Easy</option><option value="hard" ${draft.difficulty==='hard'?'selected':''}>Hard</option></select><p class="hint">Label your custom questions. Use Admin to generate a new set at your chosen difficulty.</p></div><div id="builder-questions">${draft.questions.map((q,i)=>`<section class="builder-question" data-question="${i}"><header><h3>QUESTION ${String(i+1).padStart(2,'0')}</h3><div class="builder-tools"><button class="btn paper small" data-up="${i}" ${i===0?'disabled':''} aria-label="Move question ${i+1} up">↑</button><button class="btn paper small" data-duplicate="${i}" aria-label="Duplicate question ${i+1}">+</button><button class="btn paper small" data-delete="${i}" aria-label="Delete question ${i+1}">×</button></div></header><div class="field"><label for="q-${i}">The question</label><textarea id="q-${i}" data-qtext="${i}" maxlength="240">${esc(q.text)}</textarea></div>${q.options.map((o,j)=>`<div class="option-editor"><input type="checkbox" data-correct="${i}:${j}" aria-label="Question ${i+1}, answer ${j+1} is correct" ${q.correct.includes(j)?'checked':''}><input type="text" data-option="${i}:${j}" aria-label="Question ${i+1}, answer ${j+1}" maxlength="100" placeholder="Answer ${j+1}" value="${esc(o)}"></div>`).join('')}<div class="field"><label for="fact-${i}">A fun fact for the reveal (optional)</label><input id="fact-${i}" data-fact="${i}" maxlength="280" value="${esc(q.fact)}"></div></section>`).join('')}</div><button class="btn paper" data-action="add-question" ${draft.questions.length>=20?'disabled':''}>ADD A QUESTION +</button><div class="notice">No public publishing or tracking. Export a JSON copy to keep your quiz or send it to another host. Only your live room receives it when you start.</div><div class="builder-tools"><button class="text-button" data-action="export-quiz">Export quiz file</button><label class="text-button" style="cursor:pointer">Import quiz file<input id="import-quiz" type="file" accept=".json,application/json" hidden></label></div><div class="builder-bottom"><div class="actions"><button class="btn" data-action="host-custom">HOST MY QUIZ ↗</button><button class="btn paper" data-action="practice-custom">PREVIEW SOLO</button></div></div></div>`);
+ setPage(`<div class="page narrow"><a class="back" href="#home">← BACK TO TOPICS</a><div class="eyebrow">THE BEST TOPIC? YOUR PEOPLE.</div><h1 style="font-size:60px;margin:14px 0">MAKE IT<br>AN INSIDE QUIZ.</h1><p>Write 3–20 questions. Tick the correct answer — or more than one for a multi-select. Your draft stays on this device.</p>${fieldError()}<div class="field"><label for="quiz-title">Quiz title</label><input id="quiz-title" maxlength="60" value="${esc(draft.title)}"></div><div class="field"><label for="draft-difficulty">Quiz difficulty</label><select id="draft-difficulty"><option value="easy" ${draft.difficulty!=='hard'?'selected':''}>Easy</option><option value="hard" ${draft.difficulty==='hard'?'selected':''}>Hard</option></select><p class="hint">Label your custom questions. Use Admin to generate a new set at your chosen difficulty.</p></div><div id="builder-questions">${draft.questions.map((q,i)=>`<section class="builder-question" data-question="${i}"><header><h3>QUESTION ${String(i+1).padStart(2,'0')}</h3><div class="builder-tools"><button class="btn paper small" data-up="${i}" ${i===0?'disabled':''} aria-label="Move question ${i+1} up">↑</button><button class="btn paper small" data-duplicate="${i}" aria-label="Duplicate question ${i+1}">+</button><button class="btn paper small" data-delete="${i}" aria-label="Delete question ${i+1}">×</button></div></header><div class="field"><label for="q-${i}">The question</label><textarea id="q-${i}" data-qtext="${i}" maxlength="240">${esc(q.text)}</textarea></div>${q.options.map((o,j)=>`<div class="option-editor"><input type="checkbox" data-correct="${i}:${j}" aria-label="Question ${i+1}, answer ${j+1} is correct" ${q.correct.includes(j)?'checked':''}><input type="text" data-option="${i}:${j}" aria-label="Question ${i+1}, answer ${j+1}" maxlength="100" placeholder="Answer ${j+1}" value="${esc(o)}"></div>`).join('')}<div class="field photo-editor"><label for="photo-${i}">Question picture (optional)</label><input id="photo-${i}" type="file" accept="image/*" data-photo="${i}"><p class="hint">Choose from your camera roll. Pictures are resized here; only your live room receives them when hosted.</p>${q.photo?`<img class="photo-preview" src="${esc(q.photo)}" alt="Question ${i+1} photo"><label for="photo-alt-${i}">Picture description</label><input id="photo-alt-${i}" data-photoalt="${i}" maxlength="180" value="${esc(q.photoAlt||'')}"><button type="button" class="text-button" data-remove-photo="${i}">Remove picture</button>`:''}</div><div class="field"><label for="fact-${i}">A fun fact for the reveal (optional)</label><input id="fact-${i}" data-fact="${i}" maxlength="280" value="${esc(q.fact)}"></div></section>`).join('')}</div><button class="btn paper" data-action="add-question" ${draft.questions.length>=20?'disabled':''}>ADD A QUESTION +</button><div class="notice">No public publishing or tracking. Export a JSON copy to keep your quiz or send it to another host. Only your live room receives it when you start.</div><div class="builder-tools"><button class="text-button" data-action="export-quiz">Export quiz file</button><label class="text-button" style="cursor:pointer">Import quiz file<input id="import-quiz" type="file" accept=".json,application/json" hidden></label></div><div class="builder-bottom"><div class="actions"><button class="btn" data-action="host-custom">HOST MY QUIZ ↗</button><button class="btn paper" data-action="practice-custom">PREVIEW SOLO</button></div></div></div>`);
  $('#draft-difficulty').onchange=e=>{draft.difficulty=e.target.value;draft.questions.forEach(q=>q.difficulty=e.target.value);write('draft',draft);};
  $('#quiz-title').oninput=e=>{draft.title=e.target.value;write('draft',draft);};
- $('#import-quiz').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>35000)throw Error('Choose a quiz file smaller than 35 KB.');draft=validateQuiz(JSON.parse(await file.text()));write('draft',draft);builder();toast('Quiz imported. Make it your own!');}catch(e){error(e.message);}};
+ $('#import-quiz').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>MAX_QUIZ_BYTES)throw Error('Choose a quiz file smaller than 1.1 MB.');draft=validateQuiz(JSON.parse(await file.text()));write('draft',draft);builder();toast('Quiz imported. Make it your own!');}catch(e){error(e.message);}};
 }
 main.addEventListener('input',e=>{
  const t=e.target;if(t.dataset.qtext!==undefined)draft.questions[+t.dataset.qtext].text=t.value;
  else if(t.dataset.option){const[i,j]=t.dataset.option.split(':').map(Number);draft.questions[i].options[j]=t.value;}
+ else if(t.dataset.photoalt!==undefined)draft.questions[+t.dataset.photoalt].photoAlt=t.value;
  else if(t.dataset.fact!==undefined)draft.questions[+t.dataset.fact].fact=t.value;
  else return;write('draft',draft);
 });
-main.addEventListener('change',e=>{if(e.target.dataset.correct){const[i,j]=e.target.dataset.correct.split(':').map(Number),q=draft.questions[i];q.correct=e.target.checked?[...new Set([...q.correct,j])]:q.correct.filter(x=>x!==j);write('draft',draft);}});
+main.addEventListener('change',async e=>{if(e.target.dataset.photo!==undefined){const q=draft.questions[+e.target.dataset.photo],file=e.target.files[0];if(!file)return;e.target.disabled=true;try{q.photo=await preparePhoto(file);q.photoAlt||='Your quiz photo';write('draft',draft);builder();toast('Photo added. Add a description so everyone can play.');}catch(err){error(err.message);e.target.disabled=false;}return;}if(e.target.dataset.correct){const[i,j]=e.target.dataset.correct.split(':').map(Number),q=draft.questions[i];q.correct=e.target.checked?[...new Set([...q.correct,j])]:q.correct.filter(x=>x!==j);write('draft',draft);}});
 let multi=[];
 document.addEventListener('click',async e=>{
- const t=e.target.closest('button,a');if(!t)return;
+ music.unlock();const t=e.target.closest('button,a');if(!t)return;
+ if(t.dataset.removePhoto!==undefined){const q=draft.questions[+t.dataset.removePhoto];delete q.photo;delete q.photoAlt;write('draft',draft);builder();return;}
  if(t.dataset.pack){location.hash=`host/${t.dataset.pack}`;return;}
  if(t.dataset.suggestion){pickSuggestion(t.dataset.suggestion);return;}
  if(t.dataset.category){selectedCategory=t.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.category===selectedCategory));renderPacks();return;}
  if(t.dataset.practice){location.hash=`practice/${t.dataset.practice}/${$('#count')?.value||6}/${$('#difficulty')?.value||'easy'}`;return;}
  if(t.dataset.avatar!==undefined){avatar=+t.dataset.avatar;document.querySelectorAll('[data-avatar]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.avatar===avatar));return;}
  if(t.dataset.kick){if(confirm('Remove this player from the lobby?'))send('kick',{id:t.dataset.kick});return;}
- if(t.dataset.answer!==undefined){
+ if(t.dataset.answer!==undefined){if(t.disabled)return;
   const n=+t.dataset.answer;
   if(solo){if(solo.revealed)return;if(solo.pack.questions[solo.index].type==='multi'){solo.selected=solo.selected.includes(n)?solo.selected.filter(x=>x!==n):[...solo.selected,n];t.classList.toggle('selected',solo.selected.includes(n));t.setAttribute('aria-pressed',solo.selected.includes(n));}else{solo.selected=[n];soloLock();}}
-  else if(current?.self&&!current.self.locked){if(current.phase!=='question'||Date.now()+offset<current.startAt||Date.now()+offset>=current.deadline)return;if(current.question.type==='multi'){multi=multi.includes(n)?multi.filter(x=>x!==n):[...multi,n];t.classList.toggle('selected',multi.includes(n));t.setAttribute('aria-pressed',multi.includes(n));}else{document.querySelectorAll('[data-answer]').forEach(b=>b.disabled=true);send('answer',{choices:[n],index:current.index});}}
+  else if(current?.self&&!current.self.locked){if(current.phase!=='question'||Date.now()+offset<current.startAt||Date.now()+offset>=current.deadline)return;if(current.question.type==='multi'){multi=multi.includes(n)?multi.filter(x=>x!==n):[...multi,n];t.classList.toggle('selected',multi.includes(n));t.setAttribute('aria-pressed',multi.includes(n));}else submitAnswer([n]);}
   return;
  }
  for(const action of ['up','duplicate','delete'])if(t.dataset[action]!==undefined){
@@ -278,7 +294,7 @@ document.addEventListener('click',async e=>{
  case 'random-name':$('#nickname').value=randomName();break;
  case 'copy-room':copy(shareLink(current.pin));break;
  case 'next':multi=[];send('next');break;
- case 'lock-multi':if(!multi.length)toast('Choose at least one answer.');else send('answer',{choices:multi,index:current.index});break;
+ case 'lock-multi':if(!multi.length)toast('Choose at least one answer.');else submitAnswer(multi);break;
  case 'close-room':if(confirm('Close this room for everyone and delete its scores?'))send('close');break;
  case 'rematch':multi=[];send('rematch');break;
  case 'reconnect':retries=0;connectRoom();break;
@@ -297,7 +313,7 @@ document.addEventListener('click',async e=>{
 });
 function route(){
  const parts=location.hash.slice(1).split('/'),name=parts[0]||'home',id=parts[1]||'';
- closeConnection();solo=null;multi=[];busy=false;
+ closeConnection();solo=null;multi=[];busy=false;answerPending=false;
  if(name==='host')hostSetup(id);
  else if(name==='join')joinScreen(id);
  else if(name==='room'&&/^\d{4}$/.test(id))roomRoute(id);
