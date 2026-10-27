@@ -25,7 +25,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - run: npx playwright install chromium
+      - run: npx playwright install --with-deps chromium webkit
       - name: Start local Cloudflare runtime
         run: |
           npx wrangler dev --ip 127.0.0.1 --port 8787 --local > /tmp/quickpop-server.log 2>&1 &
@@ -40,6 +40,7 @@ jobs:
       - run: node resilience-tests.mjs
       - run: node static-tests.mjs
       - run: node feature-tests.mjs
+      - run: node upgrade-tests.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
