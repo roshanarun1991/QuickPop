@@ -23,7 +23,7 @@ try{
    for(let i=0;i<count;i++){
     await page.locator('[data-answer]').first().click();
     const inView=selector=>page.locator(selector).evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth&&el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));});
-    if(await page.locator('[data-action="solo-lock"]').count()){assert(await inView('[data-action="solo-lock"]'),'Lock in must be visible without scrolling');await page.locator('[data-action="solo-lock"]').click();}
+    while(!await page.locator('[data-action="solo-next"]').count())await page.locator('[data-answer][aria-pressed="false"]:enabled').first().click();
     assert(await inView('[data-action="solo-next"]'),`${width}x${height} Next question must be visible without scrolling`);
     if(i===0&&count===6)await page.screenshot({path:`test-results/solo-next-${width}.png`});
     await page.locator('[data-action="solo-next"]').click();

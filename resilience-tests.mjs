@@ -29,7 +29,7 @@ try{
  await p.goto(base+'#daily');
  for(let i=0;i<5;i++){
   await p.locator('[data-answer]').first().click();
-  if(await p.locator('[data-action="solo-lock"]').count())await p.locator('[data-action="solo-lock"]').click();
+  while(!await p.locator('[data-action="solo-next"]').count())await p.locator('[data-answer][aria-pressed="false"]:enabled').first().click();
   await p.locator('[data-action="solo-next"]').click();
  }
  await p.getByText('YOUR DAILY LITTLE WIN',{exact:true}).waitFor();

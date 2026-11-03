@@ -1,3 +1,4 @@
+import {SPICES} from './spice-pack.js';
 import {EXTRA} from './extra-questions.js';
 import {HARD} from './hard-questions.js';
 import {TOPIC_PACKS} from './topic-packs.js';
@@ -178,7 +179,7 @@ for(const pack of PACKS){
  for(const [i,[text,answer,b,c,d,fact]] of rows.entries())pack.questions.push({id:pack.id+'-'+(i+6),text,options:[answer,b,c,d],correct:[0],fact,type:'single',image:null});
 }
 for(const pack of PACKS){for(const q of pack.questions)q.difficulty='easy';pack.questions.push(...HARD[pack.id]);pack.difficulty='Easy + Hard';}
-PACKS.push(...TOPIC_PACKS,...PARTY_PACKS,...generated);
+PACKS.push(...TOPIC_PACKS,...PARTY_PACKS,SPICES,...generated);
 export const difficultyModes=pack=>[...new Set(pack.questions.map(q=>q.difficulty||pack.difficulty||'easy'))].filter(x=>['easy','hard'].includes(x));
 export function chooseDifficulty(pack,level='easy'){
  const questions=pack.questions.filter(q=>(q.difficulty||pack.difficulty||'easy')===level);
@@ -187,7 +188,7 @@ export function chooseDifficulty(pack,level='easy'){
 }
 // Deterministically vary answer positions for solo play. Live rooms shuffle again.
 for(const pack of PACKS)for(const [i,q] of pack.questions.entries()){
- const shift=([...pack.id].reduce((n,c)=>n+c.charCodeAt(0),0)+i*3)%q.options.length;
+ const shift=([...pack.id].reduce((n,c)=>n+c.charCodeAt(0),0)+i*(q.options.length===3?1:3))%q.options.length;
  const order=q.options.map((_,j)=>(j+shift)%q.options.length);
  q.options=order.map(j=>q.options[j]);
  q.correct=order.map((old,j)=>q.correct.includes(old)?j:-1).filter(j=>j>=0);

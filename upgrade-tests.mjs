@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {validatePhoto,MAX_PHOTO_CHARS} from './photos.js';
 import {validateQuiz} from './engine.js';
+import {PACKS} from './quiz-bank.js';
 const base=process.env.TEST_URL||'http://127.0.0.1:8787/';
 const report={checks:[],errors:[]},pass=name=>{report.checks.push(name);console.log('PASS',name)};
 await mkdir('test-results',{recursive:true});
@@ -21,7 +22,7 @@ for(const [name,engine] of [['Chromium',chromium],['WebKit',webkit]]){
   for(const [width,height] of [[375,812],[414,896],[375,635],[320,568],[812,375],[1366,768]]){
    const ctx=await browser.newContext({viewport:{width,height},hasTouch:true,isMobile:width<900,serviceWorkers:'block',reducedMotion:'reduce'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
    for(const route of ['#practice/guess-food/6/hard','#practice/memology/6/easy','#practice/finish-lyrics/6/easy']){
-    await page.goto(base+route);await page.locator('[data-answer]').first().waitFor();await page.evaluate(()=>document.fonts.ready);
+    await page.goto(base+route);await page.waitForFunction(title=>document.querySelector('.solo-page > h1')?.textContent===title,PACKS.find(p=>p.id===route.split('/')[1]).title);await page.locator('[data-answer]').first().waitFor();await page.evaluate(()=>document.fonts.ready);
     assert(await inView(page,'[data-answer]'),`${name} ${width} answers in view`);
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     await page.locator('[data-answer]').first().tap();

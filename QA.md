@@ -126,3 +126,7 @@ The GitHub workflow reruns all suites before Pages publication. Cloudflare produ
 
 Local checks passed: 27 engine/content/agent tests; 13 server checks including 25 connected players completing three rounds; 117 browser/accessibility checks; 40 static-site checks; 33 feature checks; 4 resilience checks; and 23 upgrade checks across Chromium and WebKit. The new suite covers 320–1366px gameplay, portrait/landscape, single-tap submission during incoming player updates, visible Next controls, long custom content, photo compression/export/import, and reconnects. WebKit on Windows lacks Web Audio: its audio check covers graceful fallback; Chromium audio playback passed. Physical iPhone testing remains a manual acceptance check. Public deployment verification is recorded separately from these local results.
 
+
+## 2026-11-03 selection and spice release
+
+Selection regression tests cover whole-card highlighting, automatic two- and three-choice submission, deselection before completion, live confirmation and reconnect in Chromium and WebKit. The complete 12-question spice round is answered correctly in both engines, including image decoding, answer-key preservation and mobile Next visibility. Run node selection-tests.mjs; it also runs in GitHub Actions. Browser route checks wait for the requested quiz to render before measuring geometry.

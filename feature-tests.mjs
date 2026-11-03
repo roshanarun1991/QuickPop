@@ -9,9 +9,9 @@ import {MEDIA} from './visual-media.js';
 import {readFile,mkdir} from 'node:fs/promises';
 const base=process.env.TEST_URL||'http://127.0.0.1:8787/';
 let checks=0;const pass=s=>{checks++;console.log('PASS',s)};
-for(const p of PACKS.filter(p=>!p.id.startsWith('generated-'))){assert.deepEqual(difficultyModes(p),['easy','hard']);const easy=chooseDifficulty(p,'easy'),hard=chooseDifficulty(p,'hard');assert.equal(easy.questions.length,10);assert.equal(hard.questions.length,10);assert(hard.questions.every(q=>!easy.questions.some(e=>e.id===q.id)));}
+for(const p of PACKS.filter(p=>!p.id.startsWith('generated-')&&p.id!=='spices')){assert.deepEqual(difficultyModes(p),['easy','hard']);const easy=chooseDifficulty(p,'easy'),hard=chooseDifficulty(p,'hard');assert.equal(easy.questions.length,10);assert.equal(hard.questions.length,10);assert(hard.questions.every(q=>!easy.questions.some(e=>e.id===q.id)));}
 pass('49 curated packs have separate ten-question easy and hard banks');
-for(const p of PACKS)for(const q of p.questions)if(q.image){const m=MEDIA[q.image];assert(m);if(m.svg){assert(m.svg.includes('<svg'));assert(!/(?:href|src)=["']https?:|<script|onload=/.test(m.svg));}else{assert(m.src.startsWith('data:image/jpeg;base64,'));assert(m.license&&m.source&&m.credit);}}
+for(const p of PACKS)for(const q of p.questions)if(q.image){const m=MEDIA[q.image];assert(m);if(m.svg){assert(m.svg.includes('<svg'));assert(!/(?:href|src)=["']https?:|<script|onload=/.test(m.svg));}else{assert(m.src.startsWith('data:image/jpeg;base64,'));assert((m.license||m.supplied)&&m.source&&m.credit);}}
 pass('All quiz images are bundled; photographs have attribution and licences');
 const request={action:'generate',requestId:'11111111-1111-4111-8111-111111111111',topic:'Solar System',difficulty:'easy'};
 assert.deepEqual(validateRequest(request),request);for(const bad of [{...request,requestId:'../bad'},{...request,topic:'<script>'},{...request,difficulty:'extreme'}])assert.throws(()=>validateRequest(bad));
@@ -35,8 +35,8 @@ try{for(const width of [390,1440]){
     assert((await page.locator('.eyebrow').last().innerText()).includes(level.toUpperCase()));
     const key=q.image||q.text;assert(!seen.has(key),`${id} repeats a displayed question across modes`);seen.add(key);
     if(q.image)assert(await page.locator('.quiz-picture').evaluate(i=>i.complete&&i.naturalWidth>0));
-    for(const answer of q.correct)await page.locator(`[data-answer="${answer}"]`).click();
-    if(q.type==='multi')await page.locator('[data-action="solo-lock"]').click();
+    for(const answer of q.correct)await page.locator('[data-answer]').filter({hasText:q.options[answer]}).click();
+
     assert(await page.getByText('YOU KNOW YOUR STUFF.',{exact:true}).isVisible());
     const next=page.locator('[data-action="solo-next"]');
     assert(await next.evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),'Next must be visible and unobscured');

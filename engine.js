@@ -102,7 +102,7 @@ export function view(room,authToken,now=Date.now()) {
   if(!host&&!p) throw Error('Your room session has expired. Join again.');
   const revealAnswer=['reveal','finished'].includes(room.phase),q=room.questions[room.index];
   const board=ranking(room).map((row,i)=>({id:row.id,name:row.name,avatar:row.avatar,team:row.team,score:row.score,rank:i+1,change:row.previousRank?row.previousRank-i-1:0,points:revealAnswer?row.last?.points||0:0,wins:row.wins,correctCount:row.correctCount,bestStreak:row.bestStreak}));
-  const question=q?{text:q.text,options:q.options,type:q.type,image:q.image,photo:q.photo,photoAlt:q.photoAlt,clue:q.clue,...(revealAnswer?{correct:q.correct,fact:q.fact}:{})}:null;
+  const question=q?{text:q.text,options:q.options,answerCount:q.correct.length,type:q.type,image:q.image,photo:q.photo,photoAlt:q.photoAlt,clue:q.clue,...(revealAnswer?{correct:q.correct,fact:q.fact}:{})}:null;
   return {pin:room.pin,roomId:room.id,title:room.title,packId:room.packId,phase:room.phase,index:room.index,total:room.questions.length,round:room.round,
     settings:room.settings,serverNow:now,startAt:room.startAt,deadline:room.deadline,nextAt:room.nextAt,expiresAt:room.expiresAt,host,board,question,
     answered:room.players.filter(p=>p.answer).length,self:p?{id:p.id,locked:!!p.answer,choices:p.answer?.choices||[],streak:p.streak,last:revealAnswer?p.last:null}:null,

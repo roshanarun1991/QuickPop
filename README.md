@@ -123,3 +123,9 @@ Generation uses two small model batches. If the model cannot supply ten supporte
 - New packs include public-domain lyric completions, movie clues, Bollywood vs Hollywood, licensed meme photos, documented celebrity trivia and playful true/false pop facts. Image attribution is available under Text clue & credits and in MEDIA_CREDITS.md.
 
 Run `node upgrade-tests.mjs` after installing Chromium and WebKit with Playwright. Emulation tests do not replace checking an actual iPhone; WebKit on Windows does not expose Web Audio, so its audio check verifies graceful fallback.
+
+## Spice challenge and automatic answers
+
+The Spices pack has all 12 questions from the supplied Diwali quiz, including six original photographs. It offers one complete 12-question round. Spiskummin is correctly marked as cumin. Solo options shuffle each round and live options shuffle when a room is created; answer keys move with them.
+
+Selected cards use a dark fill, light text and a yellow outline, including after submission and reconnect. Multi-answer questions state how many choices to pick and submit automatically at that count. You can deselect a choice before reaching the count; there is no extra Lock In button.

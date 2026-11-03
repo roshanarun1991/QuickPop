@@ -41,6 +41,7 @@ jobs:
       - run: node static-tests.mjs
       - run: node feature-tests.mjs
       - run: node upgrade-tests.mjs
+      - run: node selection-tests.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

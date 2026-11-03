@@ -48,7 +48,7 @@ try{
  const solo=await newPage({width:390,height:844});await solo.page.goto(base+'#daily');
  for(let i=0;i<5;i++){
   await solo.page.locator('[data-answer]').first().click();
-  if(await solo.page.locator('[data-action="solo-lock"]').count())await solo.page.locator('[data-action="solo-lock"]').click();
+  while(!await solo.page.locator('[data-action="solo-next"]').count())await solo.page.locator('[data-answer][aria-pressed="false"]:enabled').first().click();
   await solo.page.locator('[data-action="solo-next"]').click();
  }
  check('Daily Pop completes five questions',await solo.page.getByText('YOUR DAILY LITTLE WIN',{exact:true}).isVisible());
@@ -83,7 +83,7 @@ try{
   await player.page.locator('#room-view[data-phase="question"]').waitFor();
   const first=player.page.locator('[data-answer]').first();await first.waitFor();
   await player.page.waitForFunction(()=>!document.querySelector('[data-answer]')?.disabled);
-  await first.click();if(await player.page.locator('[data-action="lock-multi"]').count())await player.page.locator('[data-action="lock-multi"]').click();
+  await first.click();if((await player.page.locator('.question-note').first().innerText()).includes('SUBMITS AUTOMATICALLY')){const n=Number((await player.page.locator('.question-note').first().innerText()).match(/PICK (\d+)/)[1]);for(let i=1;i<n;i++)await player.page.locator('[data-answer][aria-pressed="false"]:enabled').first().click();}
   await player.page.getByText('✓ ANSWER LOCKED. THE REVEAL IS COMING.').waitFor();
   check(`Live round ${round+1}: player answer locks`);
   if(round===0){await player.page.reload();await player.page.getByText('✓ ANSWER LOCKED. THE REVEAL IS COMING.').waitFor();check('Refresh reconnect retains locked answer and identity');}

@@ -16,3 +16,7 @@ Bundled in meme-media.json, resized only. The image licences remain unchanged. I
 ## Music and lyrics
 
 The background music in music.js is an original procedurally synthesised composition created for QuickPop, with no sampled recordings or copied song melody. The Finish the Lyrics pack uses traditional public-domain nursery rhymes and songs, not modern copyrighted lyrics.
+
+## Spices — Diwali at Aruns
+
+Six photographs extracted from the user-supplied Diwali quiz PDF for the requested public quiz. Preserved native detail, exported as high-quality JPEG (up to 1600 pixels); original dimensions range from 500×500 to 1920×1280. No QR codes or artificial upscaling.
