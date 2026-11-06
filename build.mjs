@@ -1,7 +1,7 @@
 import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
 import {build} from 'esbuild';
 await mkdir('dist',{recursive:true});
-for(const f of ['index.html','style.css','theme.js','icon.svg','manifest.webmanifest'])await copyFile(f,`dist/${f}`);
+for(const f of ['index.html','style.css','theme.js','icon.svg','manifest.webmanifest','quickpop-tv.png'])await copyFile(f,`dist/${f}`);
 await copyFile('node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2','dist/anton.woff2');
 await copyFile('node_modules/@fontsource/courier-prime/files/courier-prime-latin-400-normal.woff2','dist/courier.woff2');
 for(const name of ['anton','courier-prime'])await copyFile(`node_modules/@fontsource/${name}/LICENSE`,`dist/${name}-LICENSE.txt`);

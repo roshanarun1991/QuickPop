@@ -130,3 +130,11 @@ Local checks passed: 27 engine/content/agent tests; 13 server checks including 2
 ## 2026-11-03 selection and spice release
 
 Selection regression tests cover whole-card highlighting, automatic two- and three-choice submission, deselection before completion, live confirmation and reconnect in Chromium and WebKit. The complete 12-question spice round is answered correctly in both engines, including image decoding, answer-key preservation and mobile Next visibility. Run node selection-tests.mjs; it also runs in GitHub Actions. Browser route checks wait for the requested quiz to render before measuring geometry.
+
+## 2026-11-06 search, viewport and sound release
+
+The new layout suite covers 320×568, 375×667, 390×844, 768×1024, 844×390 and 1366×768 in Chromium and WebKit: search field sizing, Enter/submit, touch suggestions, fast refocusing, clearing, long queries, horizontal overflow and search-to-quiz Next visibility. It also checks reduced motion, text-field sizing, orientation changes and preservation of game height while the user zooms. Click sound is checked for one square-wave tone, a shared context and mute behavior; WebKit on Windows checks the disabled fallback because Web Audio is unavailable there.
+
+QA caught and corrected a stale blur timer hiding newly opened suggestions and narrow-header overflow in WebKit. The 4K TV guide was visually inspected and its exported QR decoded at both 3840×2160 and 1920×1080. CI verifies the committed image's destination and its copied build asset.
+
+These automated/emulated checks do not reproduce a physical iPhone's software keyboard or every browser/OS version. Physical-device search focus, keyboard dismissal and TV-distance QR scanning remain useful acceptance checks; no zoom restrictions are used to mask layout issues.

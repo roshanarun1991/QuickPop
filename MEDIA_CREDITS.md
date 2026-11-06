@@ -20,3 +20,7 @@ The background music in music.js is an original procedurally synthesised composi
 ## Spices — Diwali at Aruns
 
 Six photographs extracted from the user-supplied Diwali quiz PDF for the requested public quiz. Preserved native detail, exported as high-quality JPEG (up to 1600 pixels); original dimensions range from 500×500 to 1920×1280. No QR codes or artificial upscaling.
+
+## Retro interface sound and TV guide
+
+At the owner's request, the short 440→620 Hz / 660→990 Hz square-wave click is adapted from their [The.AI.Blog script](https://github.com/roshanarun1991/The.AI.Blog/blob/main/script.js). It is synthesised locally, with no recording or runtime audio download. The TV guide is an original layout using the project's fonts and palette; its QR is generated from the public QuickPop join URL.

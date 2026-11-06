@@ -124,3 +124,56 @@ button,a,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:tra
 /* Whole-card selection stays legible while locked and through the reveal. */
 .answer.selected,.answer.selected:disabled{background:#161713!important;color:#fffaf0!important;opacity:1!important;border:3px solid #fffaf0;outline:3px solid #161713;outline-offset:0;box-shadow:0 0 0 5px #ffd928!important}
 .answer.selected .shape{color:#ffd928}.answer.selected.correct:after{color:#7fd06d}.answer.selected.chosen-wrong:after{color:#ff8cb0}
+
+/* Search stays at natural scale on iOS; never disable the user's pinch zoom. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:20px}
+body{overflow-wrap:break-word}
+.page,.panel,.section-top>*,.home-tools>*,.setup-head>*,.two-col>*,footer>*{min-width:0}
+input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:max(16px,1em)}
+.search{width:min(100%,370px);max-width:100%;flex-shrink:0}
+.search-controls{display:flex;align-items:stretch;border:2px solid var(--ink);background:var(--surface);min-width:0}
+.search input{font-size:16px;border:0;min-width:0;flex:1;width:0;padding:12px;min-height:52px;border-radius:0;-webkit-appearance:none;appearance:none}
+.search input::-webkit-search-cancel-button{display:none}
+.search-controls:focus-within{outline:3px solid var(--blue);outline-offset:4px}
+.search input:focus-visible{outline:0}
+.search-clear,.search-go{border:0;flex:none;min-width:44px;min-height:48px;padding:8px;font-size:24px;background:var(--surface);color:var(--ink)}
+.search-go{border-left:2px solid var(--ink);background:var(--yellow);color:var(--dark)}
+.search-clear:hover{background:var(--raised)}
+#search-suggestions{max-height:min(340px,45dvh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#search-suggestions button{min-height:52px;overflow-wrap:anywhere;cursor:pointer}
+#topics{scroll-margin-top:20px}
+.empty p,.setup-head h1,.pack-info h3{overflow-wrap:anywhere}
+#pack-count{margin-top:20px}
+.pack-grid>.pack:only-child{grid-column:1/-1;flex-direction:row;max-width:720px}
+.pack-grid>.pack:only-child .pack-art{width:34%;flex-shrink:0;height:auto;min-height:180px;border-bottom:0;border-right:2px solid var(--dark)}
+.pack-grid>.pack:only-child .pack-info{min-width:0}
+.join-compact{display:none}
+.filters{overscroll-behavior-x:contain}
+.btn,.chip,.avatar-btn,.search-go,.search-clear{transition:background-color .15s,color .15s,transform .15s,box-shadow .15s}
+.chip:active,.avatar-btn:active,.search-go:active,.search-clear:active{transform:translateY(2px)}
+.page-enter{animation:page-arrive .2s ease-out both}
+@keyframes page-arrive{from{opacity:.35}to{opacity:1}}
+@media(prefers-reduced-motion:no-preference){
+ .pack-grid>.pack{animation:pack-arrive .2s ease-out both}
+ @keyframes pack-arrive{from{opacity:.4;translate:0 5px}to{opacity:1;translate:0 0}}
+}
+@media(max-width:900px){.section-top{align-items:stretch;flex-wrap:wrap}.section-top .search{width:100%}.footer-links{flex-wrap:wrap;justify-content:flex-end}}
+@media(max-width:700px){
+ .page{padding-inline:max(16px,env(safe-area-inset-left),env(safe-area-inset-right))}
+ .search input{font-size:16px}
+ .setup-head h1{font-size:clamp(28px,7vw,44px)}
+ .panel{padding:20px}
+ .btn{white-space:normal;overflow-wrap:anywhere}
+ .site-header nav .btn{white-space:nowrap}
+ .footer-links{gap:10px}
+}
+@media(prefers-reduced-motion:reduce){.page-enter{animation:none}.chip:active,.avatar-btn:active,.search-go:active,.search-clear:active{transform:none}}
+@media(max-width:420px){
+ .site-header,.playing-question .site-header{padding-inline:12px;gap:8px}
+ .site-header .wordmark,.playing-question .site-header .wordmark{font-size:26px}
+ .site-header .wordmark i{display:none}
+ .site-header nav{gap:6px;flex-shrink:0}
+ .site-header nav .square,.site-header #sound,.playing-question .site-header nav .square{width:44px;min-height:44px;padding:0}
+ .site-header nav>a.btn,.playing-question .site-header nav>a.btn{min-height:44px;padding:8px;font-size:11px;gap:0}
+ .join-label,.join-arrow{display:none}.join-compact{display:inline}
+}

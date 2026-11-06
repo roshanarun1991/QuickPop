@@ -21,7 +21,7 @@ try{for(const width of [390,1440]){
  const ctx=await browser.newContext({viewport:{width,height:844},serviceWorkers:'block',reducedMotion:'reduce'});await ctx.addInitScript(()=>window.QUICKPOP_STATIC=true);const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  for(const route of ['#admin','#host/guess-food','#practice/guess-logo/6/hard','#home']){await page.goto(base+route);await page.locator('main h1').waitFor();if(route==='#home')await page.locator('#search').fill('flag');const result=await new AxeBuilder({page}).analyze();assert.deepEqual(result.violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id),[]);pass(`${width}px accessible ${route}`);}
  await page.goto(base);await page.locator('#search').fill('logo');await page.getByRole('option').first().waitFor();await page.locator('#search').press('ArrowDown');await page.locator('#search').press('Enter');assert.equal(await page.locator('.pack').count(),1);assert.equal(await page.locator('#search').inputValue(),'Guess the Logo');pass(`${width}px keyboard suggestions select a topic`);
- await page.locator('#search').fill('no-such-topic-xyz');await page.getByRole('heading',{name:'COMING SOON'}).waitFor();await page.locator('[data-action="clear-search"]').click();assert.equal(await page.locator('.pack').count(),PACKS.length);pass(`${width}px missing topic and clear search`);
+ await page.locator('#search').fill('no-such-topic-xyz');await page.getByRole('heading',{name:'COMING SOON'}).waitFor();await page.getByRole('button',{name:'Clear search',exact:true}).click();assert.equal(await page.locator('.pack').count(),PACKS.length);pass(`${width}px missing topic and clear search`);
  for(const id of ['guess-food','guess-logo','guess-flag']){
   await page.goto(base+'#host/'+id);await page.locator('#difficulty').selectOption('hard');await page.locator('#count').selectOption('10');await page.locator('[data-practice]').click();await page.locator('.quiz-picture').waitFor();assert(await page.locator('.quiz-picture').evaluate(i=>i.complete&&i.naturalWidth>0));assert((await page.locator('.eyebrow').last().innerText()).includes('HARD'));await page.locator('[data-answer]').first().click();const r=await page.locator('[data-action="solo-next"]').boundingBox();assert(r.y>=0&&r.y+r.height<=844);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:`test-results/${id}-${width}.png`});pass(`${width}px ${id} hard image round and visible Next`);
  }
@@ -55,4 +55,3 @@ try{for(const width of [390,1440]){
 }
 }finally{await browser.close();}
 console.log(`${checks} new-feature checks passed`);
-

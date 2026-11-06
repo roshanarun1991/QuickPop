@@ -129,3 +129,11 @@ Run `node upgrade-tests.mjs` after installing Chromium and WebKit with Playwrigh
 The Spices pack has all 12 questions from the supplied Diwali quiz, including six original photographs. It offers one complete 12-question round. Spiskummin is correctly marked as cumin. Solo options shuffle each round and live options shuffle when a room is created; answer keys move with them.
 
 Selected cards use a dark fill, light text and a yellow outline, including after submission and reconnect. Multi-answer questions state how many choices to pick and submit automatically at that count. You can deselect a choice before reaching the count; there is no extra Lock In button.
+
+## Search, sound and the TV guide — November 2026
+
+Search and editing fields use at least 16px text to avoid iPhone focus zoom. Enter closes suggestions and the keyboard, then aligns the topic section. Clear search stays in place; rapid refocusing cancels stale close/scroll timers. Single results use a wider card. The small-screen header keeps 44px sound/theme targets and a compact Join label without sideways overflow. Pinch zoom remains available and does not resize the game layout. Brief page/card transitions respect reduced-motion preferences.
+
+Enable Sound to hear the retro square-wave click used in The.AI.Blog, plus QuickPop's background music during questions. Clicks, answer tones and music share one audio context and the footer's Sound volume control. Sound remains off by default; unavailable audio gracefully disables the control.
+
+Download [the 4K landscape TV guide](./quickpop-tv.png), also linked in the website footer. Its QR opens the live Join screen; the host supplies the room PIN. To regenerate it, run `npm run build`, install Playwright Chromium, then run `node tv-guide.mjs` and rebuild. `node tv-guide-tests.mjs` decodes the committed image and checks the published copy. `node layout-tests.mjs` exercises search, touch, rotation, motion, zoom preservation and click sound in Chromium and WebKit.
